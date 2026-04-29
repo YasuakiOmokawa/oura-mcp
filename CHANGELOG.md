@@ -1,30 +1,21 @@
-# Changelog
+# @yasuakiomokawa/oura-mcp
 
-All notable changes to this project will be documented in this file.
+## 0.1.2
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-During the `0.x` series, breaking changes are released as minor bumps.
-
-## [0.1.2] - 2026-04-29
-
-### Fixed
+### Patch Changes
 
 - `npx oura-mcp configure` now writes `mcpServers.oura` to `~/.claude.json`
   (the file Claude Code actually reads) instead of `~/.claude/settings.json`,
   and uses `<project>/.mcp.json` for project-level configuration. Earlier
   versions reported a successful integration but the server never appeared
   in `/mcp`.
-
-### Changed
-
 - `release.yml` now calls `mcp-publisher login github-oidc`, removing the
   GitHub device-flow approval that previously blocked every tag push for
   several minutes.
 
-## [0.1.1] - 2026-04-29
+## 0.1.1
 
-### Fixed
+### Patch Changes
 
 - Switch the build hook from `prepare` to `prepublishOnly`. The previous setup
   invoked `tsc` (a devDependency) during every install, including registry
@@ -33,7 +24,7 @@ During the `0.x` series, breaking changes are released as minor bumps.
   `sh: 1: oura-mcp: not found`. Tarball contents and runtime behavior are
   unchanged for users who already have a working install.
 
-## [0.1.0] - 2026-04-29
+## 0.1.0
 
 Initial release.
 
@@ -85,7 +76,3 @@ Initial release.
 - Tag-push release workflow: npm publish with provenance, npm propagation wait,
   then `mcp-publisher publish` for the MCP Registry.
 - Dependabot enabled for npm and GitHub Actions.
-
-[0.1.2]: https://github.com/YasuakiOmokawa/oura-mcp/releases/tag/v0.1.2
-[0.1.1]: https://github.com/YasuakiOmokawa/oura-mcp/releases/tag/v0.1.1
-[0.1.0]: https://github.com/YasuakiOmokawa/oura-mcp/releases/tag/v0.1.0
