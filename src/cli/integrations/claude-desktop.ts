@@ -19,5 +19,5 @@ export const claudeDesktop: Integration = {
     }
     return null;
   },
-  buildEntry: () => ({ command: 'oura-mcp' }),
+  buildEntry: () => ({ command: 'npx', args: ['-y', '@yasuakiomokawa/oura-mcp'] }),
 };

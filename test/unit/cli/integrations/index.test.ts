@@ -10,8 +10,11 @@ describe('claudeDesktop integration', () => {
     }
   });
 
-  it('buildEntry returns { command: "oura-mcp" }', () => {
-    expect(claudeDesktop.buildEntry()).toEqual({ command: 'oura-mcp' });
+  it('buildEntry returns npx invocation for the scoped package', () => {
+    expect(claudeDesktop.buildEntry()).toEqual({
+      command: 'npx',
+      args: ['-y', '@yasuakiomokawa/oura-mcp'],
+    });
   });
 });
 
@@ -26,9 +29,10 @@ describe('claudeCode integration', () => {
     expect(p).toMatch(/\.claude[\\/]settings\.local\.json$/);
   });
 
-  it('buildEntry returns oura-mcp command', () => {
-    expect(claudeCodeUser.buildEntry()).toEqual({ command: 'oura-mcp' });
-    expect(claudeCodeProject.buildEntry()).toEqual({ command: 'oura-mcp' });
+  it('buildEntry returns npx invocation', () => {
+    const expected = { command: 'npx', args: ['-y', '@yasuakiomokawa/oura-mcp'] };
+    expect(claudeCodeUser.buildEntry()).toEqual(expected);
+    expect(claudeCodeProject.buildEntry()).toEqual(expected);
   });
 });
 

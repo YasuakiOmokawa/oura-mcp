@@ -88,7 +88,8 @@ Add the following to your MCP client config:
 
   mcpServers:
     oura:
-      command: oura-mcp
+      command: npx
+      args: ["-y", "@yasuakiomokawa/oura-mcp"]
 
 Skill (optional):
   npx skills add YasuakiOmokawa/oura-mcp

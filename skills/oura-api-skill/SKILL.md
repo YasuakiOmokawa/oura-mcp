@@ -10,7 +10,7 @@ This skill documents how to use `oura-mcp` (a Model Context Protocol server for 
 
 ## Setup
 
-Run `npx oura-mcp configure` once to set up OAuth credentials. After that, MCP clients (Claude Desktop, Claude Code, Cursor) can call the tools below.
+Run `npx @yasuakiomokawa/oura-mcp configure` once to set up OAuth credentials. After that, MCP clients (Claude Desktop, Claude Code, Cursor) can call the tools below.
 
 ## Tools
 
@@ -45,5 +45,5 @@ See `references/` for per-endpoint detail and `recipes/` for common workflows.
 
 ## Common errors
 
-- "refresh_token expired" → run `oura_authenticate` (in chat) or `npx oura-mcp configure` (in terminal).
+- "refresh_token expired" → run `oura_authenticate` (in chat) or `npx @yasuakiomokawa/oura-mcp configure` (in terminal).
 - "Path not found" → verify with `oura_api_list_paths`.

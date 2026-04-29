@@ -34,7 +34,7 @@ jobs:
       - name: Wait for npm propagation
         run: |
           for i in {1..30}; do
-            npm view oura-mcp@${GITHUB_REF#refs/tags/v} version && exit 0
+            npm view @yasuakiomokawa/oura-mcp@${GITHUB_REF#refs/tags/v} version && exit 0
             sleep 10
           done
           exit 1

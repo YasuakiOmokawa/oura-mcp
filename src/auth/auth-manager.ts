@@ -45,7 +45,9 @@ export function createAuthManager(deps: AuthManagerDeps): AuthManager {
   async function doRefresh(): Promise<TokenData> {
     const current = await loadCached();
     if (!current) {
-      throw new Error('No tokens. Run `oura_authenticate` or `npx oura-mcp configure`.');
+      throw new Error(
+        'No tokens. Run `oura_authenticate` or `npx @yasuakiomokawa/oura-mcp configure`.',
+      );
     }
     if (deps.now() + TOKEN_REFRESH_BUFFER_MS < current.expires_at) return current;
 

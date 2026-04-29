@@ -80,7 +80,7 @@ function registerAuthTools({ server, authManager, startReauth }: ToolDeps): void
           content: [
             {
               type: 'text',
-              text: 'Not authenticated. Run `npx oura-mcp configure` or `oura_authenticate`.',
+              text: 'Not authenticated. Run `npx @yasuakiomokawa/oura-mcp configure` or `oura_authenticate`.',
             },
           ],
         };
@@ -246,7 +246,7 @@ function mapApiError(err: unknown): ToolResult {
       content: [
         {
           type: 'text',
-          text: 'Oura: refresh_token expired. Run `oura_authenticate` (in chat) or `npx oura-mcp configure` (in terminal) to re-authenticate.',
+          text: 'Oura: refresh_token expired. Run `oura_authenticate` (in chat) or `npx @yasuakiomokawa/oura-mcp configure` (in terminal) to re-authenticate.',
         },
       ],
       isError: true,

@@ -1,7 +1,7 @@
 # oura-mcp
 
 [![CI](https://github.com/YasuakiOmokawa/oura-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/YasuakiOmokawa/oura-mcp/actions/workflows/ci.yml)
-[![npm](https://img.shields.io/npm/v/oura-mcp.svg)](https://www.npmjs.com/package/oura-mcp)
+[![npm](https://img.shields.io/npm/v/@yasuakiomokawa/oura-mcp.svg)](https://www.npmjs.com/package/@yasuakiomokawa/oura-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 A Model Context Protocol server for the [Oura Ring API v2](https://cloud.ouraring.com/v2/docs). Exposes sleep, activity, readiness, heart rate, and workout data to MCP-compatible clients (Claude Desktop, Claude Code, Cursor, ...) via OAuth.
@@ -9,7 +9,7 @@ A Model Context Protocol server for the [Oura Ring API v2](https://cloud.ourarin
 ## Quick start
 
 ```bash
-npx oura-mcp configure
+npx @yasuakiomokawa/oura-mcp configure
 ```
 
 The wizard collects your Oura Client ID/Secret, walks through browser OAuth, saves tokens to `~/.config/oura-mcp/`, and adds an `mcpServers.oura` entry to any detected MCP client config. Restart the client and the tools below are available.
@@ -20,7 +20,7 @@ The wizard collects your Oura Client ID/Secret, walks through browser OAuth, sav
 2. **Redirect URI must be exactly**: `http://localhost:54321/callback`
    (or `http://localhost:<port>/callback` if you customize `OURA_CALLBACK_PORT`)
 3. Enable the read scopes you need (Email, Personal info, Daily activity, Heart rate, Workout, Tag, Session, SpO2, Ring configuration, Stress, Heart health)
-4. Note the Client ID and Client Secret — you'll enter them in `npx oura-mcp configure`
+4. Note the Client ID and Client Secret — you'll enter them in `npx @yasuakiomokawa/oura-mcp configure`
 
 ## Installation
 
@@ -32,7 +32,7 @@ Once published to the [official MCP Registry](https://github.com/modelcontextpro
 
 **2. Manual config (Claude Desktop / Claude Code / Cursor)**
 
-Run `npx oura-mcp configure` — Step 4 of the wizard auto-detects:
+Run `npx @yasuakiomokawa/oura-mcp configure` — Step 4 of the wizard auto-detects:
 
 - Claude Desktop: `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) or `%APPDATA%\Claude\claude_desktop_config.json` (Windows)
 - Claude Code (user): `~/.claude/settings.json`
@@ -47,7 +47,10 @@ To configure manually, add to your client config:
 ```json
 {
   "mcpServers": {
-    "oura": { "command": "oura-mcp" }
+    "oura": {
+      "command": "npx",
+      "args": ["-y", "@yasuakiomokawa/oura-mcp"]
+    }
   }
 }
 ```
@@ -96,7 +99,7 @@ OURA_CALLBACK_PORT=54321  # optional
 
 ## Troubleshooting
 
-- **"refresh_token expired"** — run `oura_authenticate` (in chat) or `npx oura-mcp configure` (in terminal).
+- **"refresh_token expired"** — run `oura_authenticate` (in chat) or `npx @yasuakiomokawa/oura-mcp configure` (in terminal).
 - **Port 54321 already in use** — set `OURA_CALLBACK_PORT=<other port>` and update the redirect URI in your Oura developer app to match.
 - **"Path not found"** — verify the path with `oura_api_list_paths`. Common slips: missing `/v2/` prefix, typo in `daily_sleep`.
 - **Setup hangs at "Waiting for authorization"** — you haven't approved in the browser yet, or the authorize page was opened in a different browser session than the one with localhost reachability.
@@ -133,4 +136,4 @@ Useful scripts:
 
 ## 日本語の方へ
 
-Oura Ring の API v2 を MCP 経由で扱うためのサーバーです。`npx oura-mcp configure` 一発で OAuth 認可からクライアント設定追記まで完了します。Claude Desktop / Claude Code / Cursor を自動検出するので、対応クライアントを使っていれば手動編集は不要です。トークンは `~/.config/oura-mcp/` に `0600` で保存され、`refresh_token` 失効時はチャットから `oura_authenticate` を呼べば再認可できます。詳しくは上記 Troubleshooting を参照してください。
+Oura Ring の API v2 を MCP 経由で扱うためのサーバーです。`npx @yasuakiomokawa/oura-mcp configure` 一発で OAuth 認可からクライアント設定追記まで完了します。Claude Desktop / Claude Code / Cursor を自動検出するので、対応クライアントを使っていれば手動編集は不要です。トークンは `~/.config/oura-mcp/` に `0600` で保存され、`refresh_token` 失効時はチャットから `oura_authenticate` を呼べば再認可できます。詳しくは上記 Troubleshooting を参照してください。

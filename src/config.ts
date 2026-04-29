@@ -31,16 +31,18 @@ export async function loadConfig(): Promise<RuntimeConfig> {
 
   if (envId && !envSecret) {
     throw new Error(
-      'OURA_CLIENT_ID set but OURA_CLIENT_SECRET missing. Run `npx oura-mcp configure`.',
+      'OURA_CLIENT_ID set but OURA_CLIENT_SECRET missing. Run `npx @yasuakiomokawa/oura-mcp configure`.',
     );
   }
   if (!envId && envSecret) {
     throw new Error(
-      'OURA_CLIENT_SECRET set but OURA_CLIENT_ID missing. Run `npx oura-mcp configure`.',
+      'OURA_CLIENT_SECRET set but OURA_CLIENT_ID missing. Run `npx @yasuakiomokawa/oura-mcp configure`.',
     );
   }
   if (envId && envSecret) {
-    log.warn('config.deprecated_env', { hint: 'consider running `npx oura-mcp configure`' });
+    log.warn('config.deprecated_env', {
+      hint: 'consider running `npx @yasuakiomokawa/oura-mcp configure`',
+    });
     return {
       clientId: envId,
       clientSecret: envSecret,
@@ -51,7 +53,9 @@ export async function loadConfig(): Promise<RuntimeConfig> {
 
   const fileCfg = await loadConfigFile();
   if (!fileCfg) {
-    throw new Error('No credentials configured. Run `npx oura-mcp configure` to set up.');
+    throw new Error(
+      'No credentials configured. Run `npx @yasuakiomokawa/oura-mcp configure` to set up.',
+    );
   }
   return {
     clientId: fileCfg.clientId,
