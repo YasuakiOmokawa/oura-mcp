@@ -1,0 +1,64 @@
+{
+  "name": "oura-mcp",
+  "version": "0.1.0",
+  "mcpName": "io.github.YasuakiOmokawa/oura-mcp",
+  "description": "Personal MCP server for Oura Ring API v2",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "oura-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "openapi/minimal",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc && shx chmod +x dist/index.js",
+    "prepare": "npm run build",
+    "watch": "tsc --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest",
+    "lint": "biome check",
+    "lint:fix": "biome check --write",
+    "format": "biome format --write",
+    "fetch:schema": "tsx scripts/fetch-schema.ts",
+    "generate:references": "tsx scripts/generate-references.ts",
+    "update:docs": "npm run fetch:schema && npm run generate:references"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^3.25.0",
+    "prompts": "^2.4.2",
+    "open": "^10.1.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.0.0",
+    "@changesets/cli": "^2.27.9",
+    "@types/node": "^22.0.0",
+    "@types/prompts": "^2.4.9",
+    "@vitest/coverage-v8": "^2.1.8",
+    "msw": "^2.4.0",
+    "shx": "^0.3.4",
+    "tsx": "^4.19.0",
+    "typescript": "^5.8.0",
+    "vitest": "^2.1.8",
+    "yaml": "^2.5.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YasuakiOmokawa/oura-mcp.git"
+  },
+  "homepage": "https://github.com/YasuakiOmokawa/oura-mcp",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "oura",
+    "oura-ring"
+  ]
+}
