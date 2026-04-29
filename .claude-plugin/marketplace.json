@@ -1,0 +1,12 @@
+{
+  "name": "oura-mcp-marketplace",
+  "owner": { "name": "YasuakiOmokawa" },
+  "plugins": [
+    {
+      "name": "oura-mcp",
+      "source": "./",
+      "version": "0.1.0",
+      "description": "Oura Ring API v2 skill for use with oura-mcp."
+    }
+  ]
+}

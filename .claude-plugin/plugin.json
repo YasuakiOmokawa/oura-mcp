@@ -1,0 +1,8 @@
+{
+  "name": "oura-mcp",
+  "version": "0.1.0",
+  "description": "Oura Ring API v2 via MCP. Includes oura-api-skill with full endpoint reference and common recipes.",
+  "author": { "name": "YasuakiOmokawa" },
+  "repository": "https://github.com/YasuakiOmokawa/oura-mcp",
+  "skills": ["./skills"]
+}
