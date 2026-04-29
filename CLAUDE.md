@@ -145,3 +145,41 @@ SDK の `McpServer` / `StdioServerTransport` 等は class 名で使う（外部 
 - 編集後: `yarn eslint <file_name> --fix` 実行（または `bun run check`）
 - `try-catch` 禁止、`then-catch` 使用
 - `async/await` は必要最小限
+
+## リリースフロー（changesets 必須）
+
+**ユーザーに見える変更（バグ fix / feature / breaking change）を含む PR を作る時は必ず changeset を同梱する。**
+docs only / CI only / 内部リファクタは除外可（その場合も判断つかなければ作る）。
+
+### 手順
+
+1. 変更ブランチで `npx changeset` を実行（または `.changeset/<name>.md` を手書き）
+   - `@yasuakiomokawa/oura-mcp` を選択
+   - `patch` / `minor` / `major` を選択（0.x 期間中は breaking でも minor）
+   - 変更概要を 1〜2 段落で書く
+2. 生成された `.changeset/<name>.md` を一緒にコミット
+3. PR マージ後、リリース時は **main で** 以下を実行:
+
+```bash
+npx changeset version          # version bump + CHANGELOG 自動追記 + .changeset/*.md 消費
+git add . && git commit -m "release: vX.Y.Z"
+git push
+git tag vX.Y.Z && git push origin vX.Y.Z   # release.yml が npm + MCP Registry に publish
+```
+
+### CHANGELOG.md フォーマット規約
+
+- changesets-native 形式（`# @yasuakiomokawa/oura-mcp` → `## X.Y.Z` → `### Patch/Minor/Major Changes`）を維持する
+- 手で intro paragraph や Keep a Changelog 形式の link references を入れない
+  （`npx changeset version` の挿入位置が壊れて毎回手修正が必要になるため）
+
+### バージョニング
+
+- `0.x.y`: breaking change を **minor バンプで許容**（npm 慣習）
+- `1.x.y`: breaking change は major バンプ必須
+
+## Git 運用
+
+- **`main` に force push 禁止**（`git push --force origin main` / `--force-with-lease` も含む）
+- main への push は通常の fast-forward / merge commit のみ
+- 既に push 済みのコミットを書き換えたい場合は revert commit を積む
