@@ -32,7 +32,7 @@ export async function collectCredentials(
         message: hasExisting
           ? 'Oura Client Secret (Enter to keep current):'
           : 'Oura Client Secret:',
-        // hasExisting 時は空入力許容 (既存値を維持)。空かつ existing なし は required エラー
+        // prompts に "keep existing" モードがないので、既存値ありのときだけ空入力を許容
         validate: (v: string) => (hasExisting && v.length === 0) || v.length > 0 || 'required',
       },
       {
@@ -55,7 +55,6 @@ export async function collectCredentials(
 
   return {
     clientId: res.clientId as string,
-    // existing 時に password を空 Enter したら既存値を流用
     clientSecret: (res.clientSecret as string) || (existing?.clientSecret ?? ''),
     callbackPort: res.callbackPort as number,
   };

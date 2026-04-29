@@ -61,6 +61,7 @@ export async function runAuthorizationFlow(deps: AuthorizeFlowDeps): Promise<Aut
         redirectUri,
         clientId: deps.clientId,
         clientSecret: deps.clientSecret,
+        signal: AbortSignal.timeout(10_000),
       }),
     )
     .then((res) => {

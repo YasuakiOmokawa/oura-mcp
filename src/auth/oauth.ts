@@ -45,7 +45,7 @@ export function buildAuthorizeUrl(params: {
   return u.toString();
 }
 
-export async function exchangeCode(params: {
+export function exchangeCode(params: {
   code: string;
   codeVerifier: string;
   clientId: string;
@@ -64,7 +64,7 @@ export async function exchangeCode(params: {
   return tokenRequest(body, params.signal);
 }
 
-export async function refreshTokens(params: {
+export function refreshTokens(params: {
   refreshToken: string;
   clientId: string;
   clientSecret: string;
