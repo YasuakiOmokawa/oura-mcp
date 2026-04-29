@@ -12,8 +12,8 @@
 //   7. 失効した refresh_token に対するエラー形式（invalid_grant 標準か）
 //
 // 使い方:
-//   1. https://cloud.ouraring.com/oauth/applications で開発者アプリを作成
-//      Redirect URI: http://127.0.0.1:54321/callback （完全一致）
+//   1. https://developer.ouraring.com/applications で開発者アプリを作成（旧 cloud.ouraring.com は 2025-10 で新規不可）
+//      Redirect URI: http://localhost:54321/callback （完全一致、127.0.0.1 ではなく localhost）
 //      Scopes: 全 read scope を有効化
 //   2. Client ID と Client Secret を取得
 //   3. 以下を実行:
@@ -26,10 +26,13 @@ import http from "node:http";
 
 const CLIENT_ID = process.env.OURA_CLIENT_ID;
 const CLIENT_SECRET = process.env.OURA_CLIENT_SECRET;
-const REDIRECT_URI = "http://127.0.0.1:54321/callback";
+// フェーズ0 検証で判明: Oura は redirect URI に `localhost` のみ HTTP 許可、`127.0.0.1` 拒否
+// bind は `127.0.0.1` 維持して DNS rebinding 防御
+const REDIRECT_URI = "http://localhost:54321/callback";
 const PORT = 54321;
+// 新ポータルのスコープは 11 個（旧 9 + stress + heart_health）
 const SCOPE =
-  "email personal daily heartrate workout tag session spo2 ring_configuration";
+  "email personal daily heartrate workout tag session spo2 ring_configuration stress heart_health";
 
 if (!CLIENT_ID || !CLIENT_SECRET) {
   console.error(
