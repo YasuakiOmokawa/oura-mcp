@@ -39,7 +39,10 @@ jobs:
           commit: 'chore: release packages'
           title: 'chore: release packages'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # 既定の GITHUB_TOKEN だと bot が作る "release packages" PR で
+          # ci.yml の pull_request トリガーが fire しない (anti-recursion)。
+          # 必須 status check が通らずマージ詰まりするため PAT で上書きする。
+          GITHUB_TOKEN: ${{ secrets.CHANGESETS_PAT }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           # npm publish に --provenance を付けるための公式 env
           NPM_CONFIG_PROVENANCE: 'true'
