@@ -44,5 +44,7 @@ jobs:
           curl -L "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_linux_amd64.tar.gz" | tar xz mcp-publisher
           chmod +x mcp-publisher
 
-      - run: ./mcp-publisher login github
+      # OIDC 経由で非対話認証する。`login github` は device flow を起動して
+      # CI が手動承認待ちで止まるので使わない。
+      - run: ./mcp-publisher login github-oidc
       - run: ./mcp-publisher publish
