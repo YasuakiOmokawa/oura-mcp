@@ -85,7 +85,8 @@ async function startReauthFlow(
 async function main(): Promise<void> {
   if (process.argv[2] === 'configure') {
     const { configure } = await import('./cli/index.js');
-    await configure();
+    const force = process.argv.slice(3).includes('--force');
+    await configure({ force });
     return;
   }
   await startStdio();
