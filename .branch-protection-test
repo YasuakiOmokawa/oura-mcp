@@ -1,0 +1,3 @@
+This file is created to test whether direct push to main is blocked by branch protection rules.
+If you can read this on origin/main, the protection is NOT in place.
+Delete this file after the test.
