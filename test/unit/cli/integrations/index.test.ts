@@ -19,14 +19,17 @@ describe('claudeDesktop integration', () => {
 });
 
 describe('claudeCode integration', () => {
-  it('user path resolves under HOME', () => {
+  it('user path is ~/.claude.json (not ~/.claude/settings.json)', () => {
     const p = claudeCodeUser.configPath();
-    expect(p).toMatch(/\.claude[\\/]settings\.json$/);
+    // Claude Code reads MCP servers from ~/.claude.json. settings.json is ignored for mcpServers.
+    expect(p).toMatch(/[\\/]\.claude\.json$/);
+    expect(p).not.toMatch(/\.claude[\\/]settings\.json$/);
   });
 
-  it('project path resolves under cwd', () => {
+  it('project path is <cwd>/.mcp.json (the standard Claude Code project MCP file)', () => {
     const p = claudeCodeProject.configPath();
-    expect(p).toMatch(/\.claude[\\/]settings\.local\.json$/);
+    expect(p).toMatch(/[\\/]\.mcp\.json$/);
+    expect(p).not.toMatch(/\.claude[\\/]settings\.local\.json$/);
   });
 
   it('buildEntry returns npx invocation', () => {

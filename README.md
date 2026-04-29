@@ -35,8 +35,8 @@ Once published to the [official MCP Registry](https://github.com/modelcontextpro
 Run `npx @yasuakiomokawa/oura-mcp configure` — Step 4 of the wizard auto-detects:
 
 - Claude Desktop: `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) or `%APPDATA%\Claude\claude_desktop_config.json` (Windows)
-- Claude Code (user): `~/.claude/settings.json`
-- Claude Code (project): `./.claude/settings.local.json`
+- Claude Code (user): `~/.claude.json`
+- Claude Code (project): `./.mcp.json`
 - Cursor (user): `~/.cursor/mcp.json`
 - Cursor (project): `./.cursor/mcp.json`
 
