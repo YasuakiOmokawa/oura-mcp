@@ -1,0 +1,27 @@
+name: Update API references
+
+on:
+  schedule:
+    - cron: '0 4 * * 1'  # 月曜 04:00 UTC = 13:00 JST
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run update:docs
+      - uses: peter-evans/create-pull-request@v6
+        with:
+          branch: ci/update-references
+          title: 'chore: update Oura API references'
+          body: 'Automated update from latest Oura OpenAPI schema.'
+          commit-message: 'chore: update API references'

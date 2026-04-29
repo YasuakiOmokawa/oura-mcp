@@ -5,11 +5,11 @@ import type { Integration } from './types.js';
 export const cursorUser: Integration = {
   name: 'Cursor (user)',
   configPath: () => path.join(os.homedir(), '.cursor', 'mcp.json'),
-  buildEntry: () => ({ command: 'oura-mcp' }),
+  buildEntry: () => ({ command: 'npx', args: ['-y', '@yasuakiomokawa/oura-mcp'] }),
 };
 
 export const cursorProject: Integration = {
   name: 'Cursor (project)',
   configPath: () => path.join(process.cwd(), '.cursor', 'mcp.json'),
-  buildEntry: () => ({ command: 'oura-mcp' }),
+  buildEntry: () => ({ command: 'npx', args: ['-y', '@yasuakiomokawa/oura-mcp'] }),
 };

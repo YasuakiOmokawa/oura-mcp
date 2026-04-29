@@ -1,5 +1,5 @@
 {
-  "name": "oura-mcp",
+  "name": "@yasuakiomokawa/oura-mcp",
   "version": "0.1.0",
   "mcpName": "io.github.YasuakiOmokawa/oura-mcp",
   "description": "Personal MCP server for Oura Ring API v2",

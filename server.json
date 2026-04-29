@@ -1,0 +1,39 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.YasuakiOmokawa/oura-mcp",
+  "title": "Oura Ring",
+  "description": "MCP server for Oura Ring API v2 (sleep, activity, readiness, heart rate, workouts).",
+  "repository": {
+    "url": "https://github.com/YasuakiOmokawa/oura-mcp",
+    "source": "github"
+  },
+  "version": "0.1.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@yasuakiomokawa/oura-mcp",
+      "version": "0.1.0",
+      "transport": { "type": "stdio" },
+      "environmentVariables": [
+        {
+          "name": "OURA_CLIENT_ID",
+          "isRequired": false,
+          "isSecret": false,
+          "description": "Optional. Alternative to `npx oura-mcp configure`. Both OURA_CLIENT_ID and OURA_CLIENT_SECRET must be set together."
+        },
+        {
+          "name": "OURA_CLIENT_SECRET",
+          "isRequired": false,
+          "isSecret": true,
+          "description": "Optional. See OURA_CLIENT_ID."
+        },
+        {
+          "name": "OURA_CALLBACK_PORT",
+          "isRequired": false,
+          "isSecret": false,
+          "description": "OAuth callback port (default 54321)"
+        }
+      ]
+    }
+  ]
+}

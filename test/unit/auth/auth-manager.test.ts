@@ -161,4 +161,33 @@ describe('createAuthManager', () => {
     await mgr.clear();
     expect(clear).toHaveBeenCalled();
   });
+
+  it('throws guidance error when no tokens are stored on getValidAccessToken', async () => {
+    const mgr = createAuthManager({
+      load: vi.fn().mockResolvedValue(null),
+      save: vi.fn(),
+      clear: vi.fn(),
+      refresh: vi.fn(),
+      now: () => Date.now(),
+    });
+    await expect(mgr.getValidAccessToken()).rejects.toThrow(/No tokens/);
+  });
+
+  it('setTokens persists via deps.save and updates cache', async () => {
+    const save = vi.fn();
+    const load = vi.fn().mockResolvedValue(null);
+    const mgr = createAuthManager({
+      load,
+      save,
+      clear: vi.fn(),
+      refresh: vi.fn(),
+      now: () => Date.now(),
+    });
+    const tokens = makeTokens({ access_token: 'fresh' });
+    await mgr.setTokens(tokens);
+    expect(save).toHaveBeenCalledWith(tokens);
+    // 後続の getCurrentTokens は cache から返るので load を再呼出ししない
+    expect(await mgr.getCurrentTokens()).toEqual(tokens);
+    expect(load).not.toHaveBeenCalled();
+  });
 });

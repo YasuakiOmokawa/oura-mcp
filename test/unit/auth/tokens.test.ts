@@ -101,4 +101,13 @@ describe('tokens', () => {
     const { clearTokens } = await import('../../../src/auth/tokens.js');
     await expect(clearTokens()).resolves.toBeUndefined();
   });
+
+  it('returns null on non-ENOENT read error (token path is a directory)', async () => {
+    // tokens.json をディレクトリとして作成 → readFile が EISDIR で失敗するパスを通す
+    const dir = path.join(tmp, 'oura-mcp');
+    mkdirSync(dir, { recursive: true });
+    mkdirSync(path.join(dir, 'tokens.json'));
+    const { loadTokens } = await import('../../../src/auth/tokens.js');
+    expect(await loadTokens()).toBeNull();
+  });
 });
