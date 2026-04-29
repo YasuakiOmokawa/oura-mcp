@@ -2,49 +2,64 @@ name: Release
 
 on:
   push:
-    tags: ['v*']
+    branches: [main]
+
+# 同じブランチで release workflow が二重起動して publish 競合するのを防ぐ
+concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
   release:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      id-token: write  # npm provenance + mcp-publisher GitHub OIDC
+      contents: write       # changesets/action が "Version Packages" PR を作成・更新するために必要
+      pull-requests: write  # 同 PR への push / label
+      id-token: write       # npm provenance + mcp-publisher GitHub OIDC
     steps:
       - uses: actions/checkout@v4
+        with:
+          # changesets/action が release base からの diff を取るので shallow 不可
+          fetch-depth: 0
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
           registry-url: 'https://registry.npmjs.org'
+
       - run: npm ci
       - run: npm run build
       - run: npm test
 
+      - name: Create release PR or publish to npm
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          # .changeset/*.md があれば "Version Packages" PR を作成/更新、無ければ publish
+          publish: npx changeset publish
+          commit: 'chore: release packages'
+          title: 'chore: release packages'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # npm publish に --provenance を付けるための公式 env
+          NPM_CONFIG_PROVENANCE: 'true'
+
+      # 以下は changesets が実際に publish したとき (Version Packages PR の merge 時) のみ走る
       - name: Sync version into server.json
+        if: steps.changesets.outputs.published == 'true'
         run: |
-          VERSION=${GITHUB_REF#refs/tags/v}
+          VERSION=$(jq -r '.version' package.json)
           jq --arg v "$VERSION" '.version = $v | .packages[0].version = $v' server.json > tmp
           mv tmp server.json
 
-      - run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Wait for npm propagation
-        run: |
-          for i in {1..30}; do
-            npm view @yasuakiomokawa/oura-mcp@${GITHUB_REF#refs/tags/v} version && exit 0
-            sleep 10
-          done
-          exit 1
-
       - name: Install mcp-publisher
+        if: steps.changesets.outputs.published == 'true'
         run: |
           curl -L "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_linux_amd64.tar.gz" | tar xz mcp-publisher
           chmod +x mcp-publisher
 
-      # OIDC 経由で非対話認証する。`login github` は device flow を起動して
-      # CI が手動承認待ちで止まるので使わない。
-      - run: ./mcp-publisher login github-oidc
-      - run: ./mcp-publisher publish
+      - name: Publish to MCP Registry
+        if: steps.changesets.outputs.published == 'true'
+        run: |
+          ./mcp-publisher login github-oidc
+          ./mcp-publisher publish
