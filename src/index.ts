@@ -84,9 +84,9 @@ async function startReauthFlow(
 
 async function main(): Promise<void> {
   if (process.argv[2] === 'configure') {
-    // CLI configure は PR-C で実装
-    console.error('CLI configure is not yet implemented (will be available in PR-C).');
-    process.exit(1);
+    const { configure } = await import('./cli/index.js');
+    await configure();
+    return;
   }
   await startStdio();
 }
