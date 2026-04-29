@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 During the `0.x` series, breaking changes are released as minor bumps.
 
+## [0.1.1] - 2026-04-29
+
+### Fixed
+
+- Switch the build hook from `prepare` to `prepublishOnly`. The previous setup
+  invoked `tsc` (a devDependency) during every install, including registry
+  installs from `npx`, which silently failed and prevented the bin link from
+  being created. Symptom: `npx -y @yasuakiomokawa/oura-mcp configure` reported
+  `sh: 1: oura-mcp: not found`. Tarball contents and runtime behavior are
+  unchanged for users who already have a working install.
+
 ## [0.1.0] - 2026-04-29
 
 Initial release.
@@ -59,4 +70,5 @@ Initial release.
   then `mcp-publisher publish` for the MCP Registry.
 - Dependabot enabled for npm and GitHub Actions.
 
+[0.1.1]: https://github.com/YasuakiOmokawa/oura-mcp/releases/tag/v0.1.1
 [0.1.0]: https://github.com/YasuakiOmokawa/oura-mcp/releases/tag/v0.1.0
