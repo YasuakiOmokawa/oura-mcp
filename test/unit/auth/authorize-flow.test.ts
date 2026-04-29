@@ -1,5 +1,27 @@
-import { describe, expect, it } from 'vitest';
-import { buildRedirectUri, toTokenData } from '../../../src/auth/authorize-flow.js';
+import { describe, expect, it, vi } from 'vitest';
+import {
+  buildRedirectUri,
+  runAuthorizationFlow,
+  toTokenData,
+} from '../../../src/auth/authorize-flow.js';
+
+vi.mock('../../../src/server/http-server.js', () => ({
+  startCallbackServer: vi.fn(),
+}));
+
+vi.mock('../../../src/auth/oauth.js', async () => {
+  const actual =
+    await vi.importActual<typeof import('../../../src/auth/oauth.js')>(
+      '../../../src/auth/oauth.js',
+    );
+  return {
+    ...actual,
+    exchangeCode: vi.fn(),
+  };
+});
+
+import { exchangeCode } from '../../../src/auth/oauth.js';
+import { startCallbackServer } from '../../../src/server/http-server.js';
 
 describe('buildRedirectUri', () => {
   it('uses localhost (Oura accepts only localhost for HTTP loopback)', () => {
@@ -58,5 +80,75 @@ describe('toTokenData', () => {
       1_000_000,
     );
     expect(t.scope).toContain('email');
+  });
+});
+
+describe('runAuthorizationFlow', () => {
+  it('orchestrates full flow: callback server → exchange → save → return tokens', async () => {
+    const stop = vi.fn();
+    vi.mocked(startCallbackServer).mockResolvedValue({
+      port: 54321,
+      codePromise: Promise.resolve('test-code'),
+      stop,
+    });
+    vi.mocked(exchangeCode).mockResolvedValue({
+      access_token: 'access-X',
+      refresh_token: 'refresh-X',
+      expires_in: 86_400,
+      token_type: 'bearer',
+      scope: 'email',
+    });
+    const saveTokens = vi.fn().mockResolvedValue(undefined);
+    const onAuthorizeUrl = vi.fn().mockResolvedValue(undefined);
+    const registerFlow = vi.fn();
+
+    const { authorizeUrl, completion } = await runAuthorizationFlow({
+      clientId: 'cid',
+      clientSecret: 'csec',
+      callbackPort: 54321,
+      saveTokens,
+      onAuthorizeUrl,
+      registerFlow,
+      now: () => 1_000_000,
+    });
+
+    expect(authorizeUrl).toMatch(/^https:\/\/cloud\.ouraring\.com\/oauth\/authorize\?/);
+    expect(authorizeUrl).toContain('client_id=cid');
+    expect(authorizeUrl).toContain('redirect_uri=http%3A%2F%2Flocalhost%3A54321%2Fcallback');
+    expect(onAuthorizeUrl).toHaveBeenCalledWith(authorizeUrl);
+    expect(registerFlow).toHaveBeenCalledWith(
+      expect.objectContaining({ state: expect.any(String), stop }),
+    );
+
+    const tokens = await completion;
+    expect(tokens.access_token).toBe('access-X');
+    expect(tokens.refresh_token).toBe('refresh-X');
+    expect(tokens.expires_at).toBe(1_000_000 + 86_400_000);
+    expect(saveTokens).toHaveBeenCalledWith(tokens);
+    expect(exchangeCode).toHaveBeenCalledWith(
+      expect.objectContaining({ code: 'test-code', clientId: 'cid', clientSecret: 'csec' }),
+    );
+  });
+
+  it('rejects when token endpoint returns no refresh_token', async () => {
+    vi.mocked(startCallbackServer).mockResolvedValue({
+      port: 54321,
+      codePromise: Promise.resolve('code-no-rt'),
+      stop: vi.fn(),
+    });
+    vi.mocked(exchangeCode).mockResolvedValue({
+      access_token: 'a',
+      expires_in: 86_400,
+      token_type: 'bearer',
+    });
+    const { completion } = await runAuthorizationFlow({
+      clientId: 'cid',
+      clientSecret: 'csec',
+      callbackPort: 54321,
+      saveTokens: vi.fn(),
+      onAuthorizeUrl: () => Promise.resolve(),
+      now: () => 1_000_000,
+    });
+    await expect(completion).rejects.toThrow(/no refresh_token/);
   });
 });

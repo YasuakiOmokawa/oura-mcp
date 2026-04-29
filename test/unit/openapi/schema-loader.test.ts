@@ -62,4 +62,11 @@ describe('schema-loader', () => {
     const b = loader.listAllAvailablePaths();
     expect(a).toBe(b); // same string reference (cached)
   });
+
+  it('throws and logs when minimal schema fails Zod validation', () => {
+    const file = path.join(tmp, 'broken.json');
+    writeFileSync(file, JSON.stringify({ paths: 'not-an-object' }));
+    const loader = createSchemaLoader(file);
+    expect(() => loader.validatePath('/v2/foo')).toThrow(/Invalid minimal schema/);
+  });
 });
