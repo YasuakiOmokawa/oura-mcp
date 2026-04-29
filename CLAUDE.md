@@ -180,6 +180,7 @@ git tag vX.Y.Z && git push origin vX.Y.Z   # release.yml が npm + MCP Registry 
 
 ## Git 運用
 
-- **`main` に force push 禁止**（`git push --force origin main` / `--force-with-lease` も含む）
-- main への push は通常の fast-forward / merge commit のみ
-- 既に push 済みのコミットを書き換えたい場合は revert commit を積む
+- **`main` に直接 push 禁止**。`git push --force` は当然ダメ、通常の `git push` も含めて NG。
+  - 例外なし。release commit / CHANGELOG 整形 / CLAUDE.md 更新といった "メタ系" でも feature branch + PR + squash merge を必ず通す。
+  - 唯一の例外は `git tag vX.Y.Z && git push origin vX.Y.Z`（タグだけは main 上で打って push する）。
+- 既に push 済みのコミットを書き換えたい場合は revert commit を積む（amend / rebase / force push 全部禁止）。
