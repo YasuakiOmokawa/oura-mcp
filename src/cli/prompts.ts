@@ -27,7 +27,10 @@ export async function collectCredentials(): Promise<Credentials> {
         name: 'callbackPort',
         message: 'Callback port:',
         initial: DEFAULT_CALLBACK_PORT,
-        validate: (v: number) => (v >= 1024 && v <= 65535) || 'must be 1024-65535',
+        // prompts v2 の NumberPrompt は submit 時に validate→initial 反映の順なので、
+        // empty 入力を許容しないと Enter で初期値が確定できない
+        validate: (v: number | string) =>
+          v === '' || (typeof v === 'number' && v >= 1024 && v <= 65535) || 'must be 1024-65535',
       },
     ],
     {
