@@ -1,5 +1,6 @@
 import { TOKEN_REFRESH_BUFFER_MS } from '../constants.js';
 import { log } from '../utils/log.js';
+import { toTokenData } from './authorize-flow.js';
 import type { TokenResponse } from './oauth.js';
 import type { TokenData } from './tokens.js';
 
@@ -35,7 +36,7 @@ export function createAuthManager(deps: AuthManagerDeps): AuthManager {
 
   function refreshIfNeeded(): Promise<TokenData> {
     if (inflight) return inflight;
-    // sync でinflight 設定して、並行 call 間で同じ Promise を共有する
+    // 並行 call が同じ Promise を共有するために同期代入が必須 (await する前に inflight を立てる)
     inflight = doRefresh().finally(() => {
       inflight = null;
     });
@@ -53,15 +54,7 @@ export function createAuthManager(deps: AuthManagerDeps): AuthManager {
 
     log.info('auth.refresh');
     const res = await deps.refresh(current.refresh_token, AbortSignal.timeout(10_000));
-    const next: TokenData = {
-      schemaVersion: 1,
-      access_token: res.access_token,
-      refresh_token: res.refresh_token ?? current.refresh_token,
-      expires_at: deps.now() + res.expires_in * 1000,
-      token_type: 'bearer',
-      scope: res.scope ?? current.scope,
-      obtained_at: deps.now(),
-    };
+    const next = toTokenData(res, current, deps.now());
     await deps.save(next);
     cached = next;
     log.info('auth.refresh.ok', { expires_at: next.expires_at });

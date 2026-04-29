@@ -202,7 +202,7 @@ type RunApiGetArgs = {
   maxPages: number;
 };
 
-async function runApiGet(args: RunApiGetArgs): Promise<ToolResult> {
+function runApiGet(args: RunApiGetArgs): Promise<ToolResult> {
   return runApiGetInner(args).catch(mapApiError);
 }
 
@@ -299,5 +299,4 @@ function mapApiError(err: unknown): ToolResult {
   };
 }
 
-// テスト用 export（runApiGet を直接 assert できるように）
 export const runApiGetForTest = runApiGet;

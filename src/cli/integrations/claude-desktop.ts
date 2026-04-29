@@ -1,6 +1,6 @@
 import os from 'node:os';
 import path from 'node:path';
-import type { Integration } from './types.js';
+import { defaultMcpEntry, type Integration } from './types.js';
 
 export const claudeDesktop: Integration = {
   name: 'Claude Desktop',
@@ -19,5 +19,5 @@ export const claudeDesktop: Integration = {
     }
     return null;
   },
-  buildEntry: () => ({ command: 'npx', args: ['-y', '@yasuakiomokawa/oura-mcp'] }),
+  buildEntry: defaultMcpEntry,
 };

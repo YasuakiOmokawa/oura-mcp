@@ -67,7 +67,7 @@ export async function loadConfig(): Promise<RuntimeConfig> {
 
 async function loadConfigFile(): Promise<ConfigData | null> {
   return readFile(getConfigPath(), 'utf-8')
-    .then((raw) => Promise.resolve().then(() => JSON.parse(raw) as unknown))
+    .then((raw) => JSON.parse(raw) as unknown)
     .then((parsed) => {
       const result = ConfigDataSchema.safeParse(parsed);
       if (!result.success) {

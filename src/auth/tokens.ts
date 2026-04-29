@@ -25,7 +25,7 @@ function getTokenPath(): string {
 
 export async function loadTokens(): Promise<TokenData | null> {
   return readFile(getTokenPath(), 'utf-8')
-    .then((raw) => Promise.resolve().then(() => JSON.parse(raw) as unknown))
+    .then((raw) => JSON.parse(raw) as unknown)
     .then((parsed) => {
       const result = TokenDataSchema.safeParse(migrateTokens(parsed));
       if (!result.success) {
@@ -45,13 +45,13 @@ export async function loadTokens(): Promise<TokenData | null> {
     });
 }
 
-export async function saveTokens(tokens: TokenData): Promise<void> {
+export function saveTokens(tokens: TokenData): Promise<void> {
   return atomicWriteFile(getTokenPath(), JSON.stringify(tokens, null, 2), {
     mode: CONFIG_FILE_PERMISSION,
   });
 }
 
-export async function clearTokens(): Promise<void> {
+export function clearTokens(): Promise<void> {
   return unlink(getTokenPath()).catch((err: NodeJS.ErrnoException) => {
     if (err.code !== 'ENOENT') throw err;
   });

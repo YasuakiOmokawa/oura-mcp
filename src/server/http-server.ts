@@ -44,6 +44,7 @@ export async function startCallbackServer(
 
   let settled = false;
   let timer: NodeJS.Timeout;
+  let closeTimer: NodeJS.Timeout | undefined;
 
   const onSig = () => finish();
 
@@ -51,13 +52,14 @@ export async function startCallbackServer(
     if (settled) return;
     settled = true;
     clearTimeout(timer);
+    if (closeTimer) clearTimeout(closeTimer);
     process.off('SIGINT', onSig);
     process.off('SIGTERM', onSig);
     server.close();
   }
 
   const server = http.createServer((req, res) => {
-    const url = new URL(req.url ?? '/', `http://127.0.0.1:${port}`);
+    const url = new URL(req.url ?? '/', `http://${OURA_BIND_HOST}:${port}`);
     if (url.pathname !== OURA_CALLBACK_PATH) {
       res.writeHead(404, { 'Content-Type': 'text/plain' }).end('Not found');
       return;
@@ -82,7 +84,7 @@ export async function startCallbackServer(
     }
     res.writeHead(200, { 'Content-Type': 'text/html' }).end(SUCCESS_HTML);
     resolveCode(code);
-    setTimeout(finish, 1000);
+    closeTimer = setTimeout(finish, 1000);
   });
 
   await new Promise<void>((res, rej) => {

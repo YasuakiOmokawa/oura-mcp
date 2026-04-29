@@ -3,10 +3,10 @@ import { redact } from './redact.js';
 const ORDER = { debug: 0, info: 1, warn: 2, error: 3 } as const;
 type Level = keyof typeof ORDER;
 
-function currentLevel(): Level {
+const CURRENT_LEVEL: Level = (() => {
   const raw = (process.env.OURA_LOG_LEVEL ?? 'info').toLowerCase();
   return (raw in ORDER ? raw : 'info') as Level;
-}
+})();
 
 function format(level: Level, event: string, data?: unknown): string {
   const ts = new Date().toISOString();
@@ -15,7 +15,7 @@ function format(level: Level, event: string, data?: unknown): string {
 }
 
 function emit(level: Level, event: string, data?: unknown): void {
-  if (ORDER[level] < ORDER[currentLevel()]) return;
+  if (ORDER[level] < ORDER[CURRENT_LEVEL]) return;
   console.error(format(level, event, data));
 }
 
