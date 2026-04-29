@@ -10,10 +10,9 @@ vi.mock('../../../src/server/http-server.js', () => ({
 }));
 
 vi.mock('../../../src/auth/oauth.js', async () => {
-  const actual =
-    await vi.importActual<typeof import('../../../src/auth/oauth.js')>(
-      '../../../src/auth/oauth.js',
-    );
+  const actual = await vi.importActual<typeof import('../../../src/auth/oauth.js')>(
+    '../../../src/auth/oauth.js',
+  );
   return {
     ...actual,
     exchangeCode: vi.fn(),
