@@ -1,5 +1,6 @@
-import { readFile } from 'node:fs/promises';
+import { readFile, unlink } from 'node:fs/promises';
 import path from 'node:path';
+import { clearTokens } from '../auth/tokens.js';
 import { PACKAGE_VERSION } from '../constants.js';
 import { getConfigDir } from '../utils/config-dir.js';
 import { saveConfig } from './configuration.js';
@@ -7,7 +8,11 @@ import { configureClients } from './integrations/index.js';
 import { performOAuth } from './oauth-flow.js';
 import { type Credentials, collectCredentials } from './prompts.js';
 
-export async function configure(): Promise<void> {
+export type ConfigureOptions = {
+  force?: boolean;
+};
+
+export async function configure(options: ConfigureOptions = {}): Promise<void> {
   console.error(`\n=== oura-mcp v${PACKAGE_VERSION} Setup ===\n`);
 
   const onSigint = (): void => {
@@ -16,16 +21,22 @@ export async function configure(): Promise<void> {
   };
   process.once('SIGINT', onSigint);
 
-  return runWizard().finally(() => {
+  return runWizard(options).finally(() => {
     process.removeListener('SIGINT', onSigint);
   });
 }
 
-async function runWizard(): Promise<void> {
-  console.error('Step 1/4: Credentials');
-  const creds = await collectCredentials();
+async function runWizard(options: ConfigureOptions): Promise<void> {
+  if (options.force) {
+    console.error('--force: clearing saved config and tokens before re-prompting...\n');
+    await clearConfig();
+    await clearTokens();
+  }
 
-  const prev = await readPrevConfig();
+  console.error('Step 1/4: Credentials');
+  const prev = options.force ? null : await readPrevConfig();
+  const creds = await collectCredentials(prev);
+
   const isUnchanged =
     prev !== null &&
     prev.clientId === creds.clientId &&
@@ -48,6 +59,19 @@ async function runWizard(): Promise<void> {
   await configureClients();
 
   console.error('\nDone. Restart your MCP client to load oura-mcp.');
+  printSkillInstallHint();
+}
+
+function printSkillInstallHint(): void {
+  console.error('\n=== Skill (optional) ===');
+  console.error('Install oura-api-skill so the agent has endpoint references and recipes:');
+  console.error('  npx skills add YasuakiOmokawa/oura-mcp');
+}
+
+async function clearConfig(): Promise<void> {
+  return unlink(path.join(getConfigDir(), 'config.json')).catch((err: NodeJS.ErrnoException) => {
+    if (err.code !== 'ENOENT') throw err;
+  });
 }
 
 async function readPrevConfig(): Promise<Credentials | null> {

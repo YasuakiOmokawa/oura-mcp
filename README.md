@@ -14,6 +14,12 @@ npx @yasuakiomokawa/oura-mcp configure
 
 The wizard collects your Oura Client ID/Secret, walks through browser OAuth, saves tokens to `~/.config/oura-mcp/`, and adds an `mcpServers.oura` entry to any detected MCP client config. Restart the client and the tools below are available.
 
+Re-running `configure` pre-fills the saved Client ID / port so you only need to press Enter to keep them. Type `--force` to wipe saved state and start from scratch:
+
+```bash
+npx @yasuakiomokawa/oura-mcp configure --force
+```
+
 ## Prerequisites
 
 1. Register an Oura developer app at https://cloud.ouraring.com/oauth/applications
