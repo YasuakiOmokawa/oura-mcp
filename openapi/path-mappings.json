@@ -1,0 +1,19 @@
+{
+  "/v2/usercollection/daily_sleep": "daily-sleep",
+  "/v2/usercollection/daily_activity": "daily-activity",
+  "/v2/usercollection/daily_readiness": "daily-readiness",
+  "/v2/usercollection/daily_stress": "daily-stress",
+  "/v2/usercollection/daily_spo2": "daily-spo2",
+  "/v2/usercollection/daily_resilience": "daily-resilience",
+  "/v2/usercollection/daily_cardiovascular_age": "daily-cardiovascular-age",
+  "/v2/usercollection/sleep": "sleep",
+  "/v2/usercollection/sleep_time": "sleep-time",
+  "/v2/usercollection/heartrate": "heartrate",
+  "/v2/usercollection/workout": "workout",
+  "/v2/usercollection/session": "session",
+  "/v2/usercollection/vo2_max": "vo2-max",
+  "/v2/usercollection/personal_info": "personal-info",
+  "/v2/usercollection/ring_configuration": "ring-configuration",
+  "/v2/usercollection/rest_mode_period": "rest-mode-period",
+  "/v2/usercollection/enhanced_tag": "enhanced-tag"
+}
