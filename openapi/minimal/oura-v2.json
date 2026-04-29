@@ -1,0 +1,194 @@
+{
+  "paths": {
+    "/v2/usercollection/personal_info": {
+      "get": {
+        "summary": "Single Personal Info Document"
+      }
+    },
+    "/v2/usercollection/tag": {
+      "get": {
+        "summary": "Multiple Tag Documents"
+      }
+    },
+    "/v2/usercollection/enhanced_tag": {
+      "get": {
+        "summary": "Multiple Enhanced Tag Documents"
+      }
+    },
+    "/v2/usercollection/workout": {
+      "get": {
+        "summary": "Multiple Workout Documents"
+      }
+    },
+    "/v2/usercollection/session": {
+      "get": {
+        "summary": "Multiple Session Documents"
+      }
+    },
+    "/v2/usercollection/daily_activity": {
+      "get": {
+        "summary": "Multiple Daily Activity Documents"
+      }
+    },
+    "/v2/usercollection/daily_sleep": {
+      "get": {
+        "summary": "Multiple Daily Sleep Documents"
+      }
+    },
+    "/v2/usercollection/daily_spo2": {
+      "get": {
+        "summary": "Multiple Daily Spo2 Documents"
+      }
+    },
+    "/v2/usercollection/daily_readiness": {
+      "get": {
+        "summary": "Multiple Daily Readiness Documents"
+      }
+    },
+    "/v2/usercollection/sleep": {
+      "get": {
+        "summary": "Multiple Sleep Documents"
+      }
+    },
+    "/v2/usercollection/sleep_time": {
+      "get": {
+        "summary": "Multiple Sleep Time Documents"
+      }
+    },
+    "/v2/usercollection/rest_mode_period": {
+      "get": {
+        "summary": "Multiple Rest Mode Period Documents"
+      }
+    },
+    "/v2/usercollection/ring_configuration": {
+      "get": {
+        "summary": "Multiple Ring Configuration Documents"
+      }
+    },
+    "/v2/usercollection/daily_stress": {
+      "get": {
+        "summary": "Multiple Daily Stress Documents"
+      }
+    },
+    "/v2/usercollection/daily_resilience": {
+      "get": {
+        "summary": "Multiple Daily Resilience Documents"
+      }
+    },
+    "/v2/usercollection/daily_cardiovascular_age": {
+      "get": {
+        "summary": "Multiple Daily Cardiovascular Age Documents"
+      }
+    },
+    "/v2/usercollection/vO2_max": {
+      "get": {
+        "summary": "Multiple Vo2 Max Documents"
+      }
+    },
+    "/v2/usercollection/tag/{document_id}": {
+      "get": {
+        "summary": "Single Tag Document"
+      }
+    },
+    "/v2/usercollection/enhanced_tag/{document_id}": {
+      "get": {
+        "summary": "Single Enhanced Tag Document"
+      }
+    },
+    "/v2/usercollection/workout/{document_id}": {
+      "get": {
+        "summary": "Single Workout Document"
+      }
+    },
+    "/v2/usercollection/session/{document_id}": {
+      "get": {
+        "summary": "Single Session Document"
+      }
+    },
+    "/v2/usercollection/daily_activity/{document_id}": {
+      "get": {
+        "summary": "Single Daily Activity Document"
+      }
+    },
+    "/v2/usercollection/daily_sleep/{document_id}": {
+      "get": {
+        "summary": "Single Daily Sleep Document"
+      }
+    },
+    "/v2/usercollection/daily_spo2/{document_id}": {
+      "get": {
+        "summary": "Single Daily Spo2 Document"
+      }
+    },
+    "/v2/usercollection/daily_readiness/{document_id}": {
+      "get": {
+        "summary": "Single Daily Readiness Document"
+      }
+    },
+    "/v2/usercollection/sleep/{document_id}": {
+      "get": {
+        "summary": "Single Sleep Document"
+      }
+    },
+    "/v2/usercollection/sleep_time/{document_id}": {
+      "get": {
+        "summary": "Single Sleep Time Document"
+      }
+    },
+    "/v2/usercollection/rest_mode_period/{document_id}": {
+      "get": {
+        "summary": "Single Rest Mode Period Document"
+      }
+    },
+    "/v2/usercollection/ring_configuration/{document_id}": {
+      "get": {
+        "summary": "Single Ring Configuration Document"
+      }
+    },
+    "/v2/usercollection/daily_stress/{document_id}": {
+      "get": {
+        "summary": "Single Daily Stress Document"
+      }
+    },
+    "/v2/usercollection/daily_resilience/{document_id}": {
+      "get": {
+        "summary": "Single Daily Resilience Document"
+      }
+    },
+    "/v2/usercollection/daily_cardiovascular_age/{document_id}": {
+      "get": {
+        "summary": "Single Daily Cardiovascular Age Document"
+      }
+    },
+    "/v2/usercollection/vO2_max/{document_id}": {
+      "get": {
+        "summary": "Single Vo2 Max Document"
+      }
+    },
+    "/v2/webhook/subscription": {
+      "get": {
+        "summary": "List Webhook Subscriptions"
+      }
+    },
+    "/v2/webhook/subscription/{id}": {
+      "get": {
+        "summary": "Get Webhook Subscription"
+      }
+    },
+    "/v2/usercollection/heartrate": {
+      "get": {
+        "summary": "Multiple Heartrate Documents"
+      }
+    },
+    "/v2/usercollection/ring_battery_level": {
+      "get": {
+        "summary": "Multiple Ring Battery Level Documents"
+      }
+    },
+    "/v2/usercollection/interbeat_interval": {
+      "get": {
+        "summary": "Multiple Interbeat Interval Documents"
+      }
+    }
+  }
+}
