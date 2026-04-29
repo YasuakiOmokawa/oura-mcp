@@ -38,6 +38,10 @@ coverage/
 .parcel-cache/
 .eslintcache
 
+# Plan-related backups (atomic write tmp)
+*.tmp.*
+*.bak.*
+
 # Lockfile policy: keep package-lock.json, npm only
 yarn.lock
 pnpm-lock.yaml
