@@ -1,5 +1,11 @@
 # @yasuakiomokawa/oura-mcp
 
+## 0.2.2
+
+### Patch Changes
+
+- 6aa264d: devDep: typescript 5.9 → 6.0.3
+
 ## 0.2.1
 
 ### Patch Changes
