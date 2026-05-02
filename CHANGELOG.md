@@ -1,5 +1,11 @@
 # @yasuakiomokawa/oura-mcp
 
+## 0.2.10
+
+### Patch Changes
+
+- 9992f76: Migrate to npm Trusted Publishing. Releases now exchange the GitHub Actions OIDC token for a short-lived npm publish token instead of using a long-lived `NPM_TOKEN`. Provenance is auto-attested by the npm CLI (no `--provenance` flag needed).
+
 ## 0.2.9
 
 ### Patch Changes
