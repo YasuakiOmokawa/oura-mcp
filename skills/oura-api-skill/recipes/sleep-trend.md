@@ -13,4 +13,6 @@ Analyze sleep score and structure trends over a period.
 ## Notes
 
 - `daily_sleep` gives the score; `sleep` gives stage-level data. Both share the same `day` field.
-- Use `max_pages: 3` to cover ~42 days; raise to 5+ only when the user asks for >2 months.
+- Use `max_pages: 3` to cover ~42 days; raise to 7 for 90 days, up to 20 for longer.
+- For comparison-style questions ("worse?", "悪くなってない？"), lead with the verdict (worse / better / flat-with-noise) before the evidence. Do not force a directional narrative when the slope is within noise — say "noise" plainly.
+- Trend-vs-noise gate: report a directional trend only if `|slope × window_days|` is at least 1× the night-to-night `score` standard deviation.

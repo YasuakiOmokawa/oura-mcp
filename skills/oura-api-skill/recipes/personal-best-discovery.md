@@ -6,7 +6,7 @@ Mine the user's own historical data for their **best** sleep / readiness / activ
 
 1. Choose the target metric (default: `daily_sleep.score`). Honor user's explicit choice (HRV, deep sleep minutes, readiness, etc.).
 2. Pull 90 days of the relevant daily endpoint with `oura_api_get` and `max_pages: 7`.
-3. Identify the top 5 days by the chosen metric. Reject days with obvious confounders (e.g., illness — `temperature_deviation` >0.5°C).
+3. Identify the top 5 days by the chosen metric. Reject days with obvious confounders (e.g., illness). For the temperature signal, prefer `daily_sleep.data[].temperature_deviation` (raw °C) > 0.5°C; if that field is missing in the response, fall back to pulling `/v2/usercollection/daily_readiness` and screening on `data[].contributors.body_temperature` (0–100 score) ≤ 70.
 4. For each top-5 day, fetch the **same-day and prior-day** detail:
    - Prior-day `daily_activity` (steps, active calories, training load)
    - Prior-day workout sessions if any (`/v2/usercollection/workout`)
@@ -22,7 +22,8 @@ Mine the user's own historical data for their **best** sleep / readiness / activ
 
 ## Notes
 
-- Need ≥30 days of data for the contrast to be meaningful. Below that, downgrade to "your best week" instead of "your best day".
-- Some users tag rarely. If `enhanced_tag` is sparse, lean on activity and bedtime patterns instead of tags.
+- Two separate 30-day gates apply:
+  - **Dataset gate**: total dataset must span ≥30 days. Below that, downgrade to "your best week" instead of "your best day".
+  - **Recency gate**: the ranking pool excludes the most recent 30 days (those days could become the "this-week checklist" target rather than the historical reference).
+- Some users tag rarely. If `enhanced_tag` is sparse, drop the tag dimension and build the checklist from bedtime + prior-day activity + workout-presence only.
 - Do not over-interpret n=5. Frame patterns as hypotheses worth testing, not laws.
-- Skip days from <30 days ago when looking at "this week's checklist" — too recent to be a robust historical reference.

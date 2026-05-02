@@ -4,8 +4,11 @@ Help the user run a structured 2-week A/B experiment on themselves (e.g., "no ca
 
 ## Steps
 
-1. Confirm the experimental hypothesis in one line ("仮説: X をやめると sleep score が上がる") and the **single primary metric** (default: `daily_sleep.score`). Multi-metric = noise; pick one.
-2. Define baseline window: previous 14 days. If <14 days are available, abort and say so.
+1. Confirm three things, in order, before starting:
+   - **Hypothesis** in one line ("仮説: X をやめると sleep score が上がる").
+   - **Exact rule** for the intervention. Vague rules destroy compliance — make it binary. Examples: "カフェイン総量ゼロ" vs "14:00 以降のカフェインゼロ" are different experiments; pick one. "Screen off 1h before bed" vs "no screens after 22:00" — pick one.
+   - **Single primary metric** (default: `daily_sleep.score`). Multi-metric = noise; pick one. Lock it before T0 — do not change mid-experiment. If the user prefers HRV / deep sleep / RHR, substitute everywhere in the rest of this recipe.
+2. Define baseline window: previous 14 days. **At T0, validate `len(data) == 14`** before computing baseline stats; if shorter (sparse syncs / new user), abort and say so explicitly.
 3. Define intervention window: next 14 days from today, with the user committing to one behavior change.
 4. At baseline collection time:
    - Pull `oura_api_get` `path: "/v2/usercollection/daily_sleep"`, last 14 days.

@@ -1,11 +1,13 @@
 ---
-paths: [".changeset/**", "CHANGELOG.md", "package.json"]
+paths: [".changeset/**", "CHANGELOG.md", "package.json", "skills/**"]
 ---
 
 # リリースフロー（changesets 必須）
 
 **ユーザーに見える変更（バグ fix / feature / breaking change）を含む PR を作る時は必ず changeset を同梱する。**
 docs only / CI only / 内部リファクタは除外可（その場合も判断つかなければ作る）。
+
+**skill 変更（`skills/**`）も changeset 対象**。npm package には同梱されないが、recipe / SKILL.md の改修は skill consumer にとって user-visible な挙動変化なので CHANGELOG に載せる。`@yasuakiomokawa/oura-mcp` の patch bump で運用する。
 
 ## 手順
 
