@@ -47,6 +47,15 @@ jobs:
           # npm publish に --provenance を付けるための公式 env
           NPM_CONFIG_PROVENANCE: 'true'
 
+      # release PR が作成/更新された時、CI 通過後に自動 squash merge するよう設定。
+      # branch protection の required status checks が通ってから実行される。
+      - name: Enable auto-merge for release PR
+        if: steps.changesets.outputs.pullRequestNumber != ''
+        run: gh pr merge --auto --squash "${PR_NUMBER}"
+        env:
+          GH_TOKEN: ${{ secrets.CHANGESETS_PAT }}
+          PR_NUMBER: ${{ steps.changesets.outputs.pullRequestNumber }}
+
       # 以下は changesets が実際に publish したとき (Version Packages PR の merge 時) のみ走る
       - name: Sync version into server.json
         if: steps.changesets.outputs.published == 'true'
