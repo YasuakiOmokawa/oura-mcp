@@ -79,34 +79,24 @@ The companion [`oura-api-skill`](skills/oura-api-skill/SKILL.md) ships per-endpo
 
 ## Configuration
 
-Two ways, env vars take precedence over the config file:
+Two ways. **The config file (Option A) is the recommended path** — it stores secrets at-rest with `0600` and is self-healing. Environment variables (Option B) are kept for CI / Docker / ephemeral environments where writing a file is impractical, but they leak more easily and are not recommended for daily use.
+
+### Option A — config file (recommended)
+
+Run the wizard once and forget about it:
 
 ```bash
-# Option A — env vars (set both together)
-OURA_CLIENT_ID=...
-OURA_CLIENT_SECRET=...
-OURA_CALLBACK_PORT=54321  # optional
-
-# Option B — config file (managed by the wizard)
-~/.config/oura-mcp/config.json   # 0600
-~/.config/oura-mcp/tokens.json   # 0600
+npx @yasuakiomokawa/oura-mcp configure
 ```
 
-> **Never put `OURA_CLIENT_SECRET` in `args`** of your MCP client config.
-> Process arguments are visible to other users via `ps` / `/proc/<pid>/cmdline`.
-> Always use the `env` block:
->
-> ```json
-> {
->   "mcpServers": {
->     "oura": {
->       "command": "npx",
->       "args": ["-y", "@yasuakiomokawa/oura-mcp"],
->       "env": { "OURA_CLIENT_ID": "...", "OURA_CLIENT_SECRET": "..." }
->     }
->   }
-> }
-> ```
+This writes:
+
+```
+~/.config/oura-mcp/config.json   # 0600, contains clientId / clientSecret / callbackPort
+~/.config/oura-mcp/tokens.json   # 0600, contains the OAuth access / refresh tokens
+```
+
+Permissions are re-checked on every load and chmod'd back to `0600` if anything else touched them.
 
 `config.json` schema:
 
@@ -116,6 +106,41 @@ OURA_CALLBACK_PORT=54321  # optional
   "clientId": "...",
   "clientSecret": "...",
   "callbackPort": 54321
+}
+```
+
+### Option B — environment variables (CI / Docker only)
+
+```bash
+OURA_CLIENT_ID=...
+OURA_CLIENT_SECRET=...        # must be set together with OURA_CLIENT_ID
+OURA_CALLBACK_PORT=54321      # optional; safe to set in env regardless of Option A/B
+```
+
+When the server boots and both `OURA_CLIENT_ID` and `OURA_CLIENT_SECRET` are set, it uses them and emits a `config.env_credentials` warning to stderr.
+
+**Why not recommended**:
+
+- `process.env` is readable from `/proc/<pid>/environ` by any process running as the same user.
+- Environment is inherited by every child process the server spawns.
+- Crash dumps and observability tools that capture `process.env` will leak the secret.
+- `OURA_CLIENT_SECRET=... npx ...` typed at the shell ends up in shell history.
+
+`OURA_CALLBACK_PORT` is **not** a secret and is fine to pass via env in either mode.
+
+### Never use `args` for secrets
+
+Process arguments are visible to other users via `ps` / `/proc/<pid>/cmdline`. Use the `env` block of your MCP client config:
+
+```json
+{
+  "mcpServers": {
+    "oura": {
+      "command": "npx",
+      "args": ["-y", "@yasuakiomokawa/oura-mcp"],
+      "env": { "OURA_CLIENT_ID": "...", "OURA_CLIENT_SECRET": "..." }
+    }
+  }
 }
 ```
 
