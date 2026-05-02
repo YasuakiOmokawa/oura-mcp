@@ -39,11 +39,34 @@ See `references/` for per-endpoint detail and `recipes/` for common workflows.
 
 ## Recipes
 
+Each recipe is a workflow guide for a specific user intent, not a hard-coded function. Pick the one that matches the user's real question.
+
+### Status / review (descriptive)
+
 - `recipes/weekly-review.md` — review last 7 days
 - `recipes/sleep-trend.md` — sleep trend analysis
-- `recipes/recovery-check.md` — recovery state check
+- `recipes/recovery-check.md` — recovery state right now
+- `recipes/monthly-narrative.md` — narrative monthly retrospective + next-month theme
+
+### Diagnostic (why is something off?)
+
+- `recipes/symptom-investigator.md` — vague complaint ("最近疲れる") → hypothesis-driven multi-endpoint check
+- `recipes/recovery-debt-tracker.md` — quantify accumulated load and project recovery time
+
+### Forward-looking (what should I do?)
+
+- `recipes/event-prep.md` — maximize tomorrow's readiness for an important event
+- `recipes/intervention-experiment.md` — design and run a 2-week A/B self-experiment
+
+### Discovery / learning
+
+- `recipes/personal-best-discovery.md` — mine your own best days for a personalized this-week checklist
 
 ## Common errors
 
 - "refresh_token expired" → run `oura_authenticate` (in chat) or `npx @yasuakiomokawa/oura-mcp configure` (in terminal).
 - "Path not found" → verify with `oura_api_list_paths`.
+
+## Credits
+
+The diagnostic and discovery recipes draw inspiration from analytical tools in [mitchhankins01/oura-ring-mcp](https://github.com/mitchhankins01/oura-ring-mcp) (MIT, separate implementation). The recipes here are reframed as LLM workflow guides rather than fixed functions, and are written from scratch.
