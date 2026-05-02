@@ -92,6 +92,22 @@ OURA_CALLBACK_PORT=54321  # optional
 ~/.config/oura-mcp/tokens.json   # 0600
 ```
 
+> **Never put `OURA_CLIENT_SECRET` in `args`** of your MCP client config.
+> Process arguments are visible to other users via `ps` / `/proc/<pid>/cmdline`.
+> Always use the `env` block:
+>
+> ```json
+> {
+>   "mcpServers": {
+>     "oura": {
+>       "command": "npx",
+>       "args": ["-y", "@yasuakiomokawa/oura-mcp"],
+>       "env": { "OURA_CLIENT_ID": "...", "OURA_CLIENT_SECRET": "..." }
+>     }
+>   }
+> }
+> ```
+
 `config.json` schema:
 
 ```json
