@@ -1,5 +1,11 @@
 # @yasuakiomokawa/oura-mcp
 
+## 0.2.7
+
+### Patch Changes
+
+- 512b80d: Supply chain hardening: enable Dependabot for npm and GitHub Actions, run `npm audit signatures` in CI to verify Sigstore provenance, and document `env` (not `args`) as the required way to pass `OURA_CLIENT_SECRET` to MCP clients (process args are visible via `ps`).
+
 ## 0.2.6
 
 ### Patch Changes
