@@ -1,5 +1,11 @@
 # @yasuakiomokawa/oura-mcp
 
+## 0.2.11
+
+### Patch Changes
+
+- d0b35b4: Replace the unmaintained `prompts` package (last release in 2021) with `@inquirer/prompts` for the `configure` wizard. Functionally equivalent (same fields, same validation), but the prompt UI changes and the dep is now actively maintained. Also pins `tsconfig.compilerOptions.types: ["node"]` to make `@types/node` resolution explicit and not depend on `@types/prompts`'s incidental hoisting.
+
 ## 0.2.10
 
 ### Patch Changes
