@@ -1,5 +1,11 @@
 # @yasuakiomokawa/oura-mcp
 
+## 0.2.4
+
+### Patch Changes
+
+- 8dbce64: Harden security: enforce Oura host allowlist on every API request (defense against token passthrough), redact secrets in `OuraOAuthError.body`, remove the unused `apiUrl` config field, and pin CI workflow `permissions: contents: read`.
+
 ## 0.2.3
 
 ### Patch Changes
