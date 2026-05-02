@@ -103,6 +103,38 @@ describe('createAuthManager', () => {
     await expect(mgr.getValidAccessToken()).rejects.toBeInstanceOf(RefreshTokenExpiredError);
   });
 
+  it('wipes stored tokens on RefreshTokenExpiredError (reuse detection)', async () => {
+    const tokens = makeTokens({ expires_at: 100 });
+    const clear = vi.fn().mockResolvedValue(undefined);
+    const load = vi.fn().mockResolvedValue(tokens);
+    const mgr = createAuthManager({
+      load,
+      save: vi.fn(),
+      clear,
+      refresh: vi.fn().mockRejectedValue(new RefreshTokenExpiredError()),
+      now: () => 1_000_000,
+    });
+    await expect(mgr.getValidAccessToken()).rejects.toBeInstanceOf(RefreshTokenExpiredError);
+    expect(clear).toHaveBeenCalledTimes(1);
+    // Cache must be invalidated so the next call re-reads (and finds nothing).
+    load.mockResolvedValueOnce(null);
+    expect(await mgr.getCurrentTokens()).toBeNull();
+  });
+
+  it('does not clear tokens for non-reuse refresh failures', async () => {
+    const tokens = makeTokens({ expires_at: 100 });
+    const clear = vi.fn();
+    const mgr = createAuthManager({
+      load: vi.fn().mockResolvedValue(tokens),
+      save: vi.fn(),
+      clear,
+      refresh: vi.fn().mockRejectedValue(new Error('network down')),
+      now: () => 1_000_000,
+    });
+    await expect(mgr.getValidAccessToken()).rejects.toThrow(/network down/);
+    expect(clear).not.toHaveBeenCalled();
+  });
+
   it('preserves existing refresh_token if response omits it', async () => {
     const tokens = makeTokens({ expires_at: 100 });
     const save = vi.fn();

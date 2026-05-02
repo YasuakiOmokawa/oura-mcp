@@ -1,7 +1,7 @@
 import { TOKEN_REFRESH_BUFFER_MS } from '../constants.js';
 import { log } from '../utils/log.js';
 import { toTokenData } from './authorize-flow.js';
-import type { TokenResponse } from './oauth.js';
+import { RefreshTokenExpiredError, type TokenResponse } from './oauth.js';
 import type { TokenData } from './tokens.js';
 
 export type AuthManagerDeps = {
@@ -53,12 +53,26 @@ export function createAuthManager(deps: AuthManagerDeps): AuthManager {
     if (deps.now() + TOKEN_REFRESH_BUFFER_MS < current.expires_at) return current;
 
     log.info('auth.refresh');
-    const res = await deps.refresh(current.refresh_token, AbortSignal.timeout(10_000));
-    const next = toTokenData(res, current, deps.now());
-    await deps.save(next);
-    cached = next;
-    log.info('auth.refresh.ok', { expires_at: next.expires_at });
-    return next;
+    return deps
+      .refresh(current.refresh_token, AbortSignal.timeout(10_000))
+      .then(async (res) => {
+        const next = toTokenData(res, current, deps.now());
+        await deps.save(next);
+        cached = next;
+        log.info('auth.refresh.ok', { expires_at: next.expires_at });
+        return next;
+      })
+      .catch(async (err: unknown) => {
+        // OAuth 2.1 BCP refresh-token reuse detection: a 400 invalid_grant means
+        // the refresh_token was revoked or replayed. Wipe local tokens so the
+        // next tool call forces a clean re-authorization.
+        if (err instanceof RefreshTokenExpiredError) {
+          log.warn('auth.refresh.reuse_detected');
+          cached = null;
+          await deps.clear();
+        }
+        throw err;
+      });
   }
 
   return {
