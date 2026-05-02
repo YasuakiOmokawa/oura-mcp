@@ -39,8 +39,11 @@ export async function loadConfig(): Promise<RuntimeConfig> {
     );
   }
   if (envId && envSecret) {
-    log.warn('config.deprecated_env', {
-      hint: 'consider running `npx @yasuakiomokawa/oura-mcp configure`',
+    // Env-based credentials are visible via /proc/<pid>/environ and inherited
+    // by child processes. Recommend `configure` for at-rest 0600 storage and
+    // keep env support around only for CI / Docker / ephemeral runs.
+    log.warn('config.env_credentials', {
+      hint: 'env vars leak via /proc and child processes; prefer `npx @yasuakiomokawa/oura-mcp configure` for at-rest 0600 storage',
     });
     return {
       clientId: envId,
