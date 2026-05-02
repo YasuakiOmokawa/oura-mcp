@@ -1,4 +1,4 @@
-import prompts from 'prompts';
+import { input, number, password } from '@inquirer/prompts';
 import { DEFAULT_CALLBACK_PORT } from '../constants.js';
 
 export type Credentials = {
@@ -17,45 +17,29 @@ export async function collectCredentials(
     console.error('  Press Enter to keep, or type a new value to change.\n');
   }
 
-  const res = await prompts(
-    [
-      {
-        type: 'text',
-        name: 'clientId',
-        message: 'Oura Client ID:',
-        initial: existing?.clientId ?? undefined,
-        validate: (v: string) => v.length > 0 || 'required',
-      },
-      {
-        type: 'password',
-        name: 'clientSecret',
-        message: hasExisting
-          ? 'Oura Client Secret (Enter to keep current):'
-          : 'Oura Client Secret:',
-        // `prompts` has no "keep existing" mode, so allow empty input only when an existing value is present
-        validate: (v: string) => (hasExisting && v.length === 0) || v.length > 0 || 'required',
-      },
-      {
-        type: 'number',
-        name: 'callbackPort',
-        message: 'Callback port:',
-        initial: existing?.callbackPort ?? DEFAULT_CALLBACK_PORT,
-        // `prompts` v2 NumberPrompt runs validate before applying `initial` on submit,
-        // so empty input must be allowed for Enter to commit the default
-        validate: (v: number | string) =>
-          v === '' || (typeof v === 'number' && v >= 1024 && v <= 65535) || 'must be 1024-65535',
-      },
-    ],
-    {
-      onCancel: () => {
-        throw new Error('Cancelled');
-      },
-    },
-  );
+  const clientId = await input({
+    message: 'Oura Client ID:',
+    default: existing?.clientId,
+    validate: (v) => v.length > 0 || 'required',
+  });
+
+  const secretInput = await password({
+    message: hasExisting ? 'Oura Client Secret (Enter to keep current):' : 'Oura Client Secret:',
+    // Allow empty input only when an existing value is present (keep-current mode)
+    validate: (v) => (hasExisting && v.length === 0) || v.length > 0 || 'required',
+  });
+
+  const port = await number({
+    message: 'Callback port:',
+    default: existing?.callbackPort ?? DEFAULT_CALLBACK_PORT,
+    min: 1024,
+    max: 65535,
+    required: true,
+  });
 
   return {
-    clientId: res.clientId as string,
-    clientSecret: (res.clientSecret as string) || (existing?.clientSecret ?? ''),
-    callbackPort: res.callbackPort as number,
+    clientId,
+    clientSecret: secretInput || (existing?.clientSecret ?? ''),
+    callbackPort: port ?? DEFAULT_CALLBACK_PORT,
   };
 }
