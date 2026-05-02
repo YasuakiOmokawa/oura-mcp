@@ -1,5 +1,11 @@
 # @yasuakiomokawa/oura-mcp
 
+## 0.2.3
+
+### Patch Changes
+
+- 4c2300b: dep: zod 3.25 → 4.4.2. Migrate `z.string().url()` to top-level `z.url()` idiom.
+
 ## 0.2.2
 
 ### Patch Changes
