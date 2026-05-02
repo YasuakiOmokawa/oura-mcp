@@ -1,7 +1,6 @@
 ---
 name: oura-api-skill
 description: Reference and recipes for Oura Ring API v2 via oura-mcp. Use when user asks about sleep, activity, readiness, heart rate, workouts, or other Oura data.
-license: MIT
 ---
 
 # Oura API Skill
@@ -23,7 +22,16 @@ Run `npx @yasuakiomokawa/oura-mcp configure` once to set up OAuth credentials. A
 ## Date conventions
 
 - Daily endpoints (`/daily_*`): `start_date` / `end_date` in `YYYY-MM-DD`. Default to last 7 days when user is vague.
-- Time-series (`heartrate`): `start_datetime` / `end_datetime` in ISO 8601 UTC.
+- Time-series (`heartrate`): `start_datetime` / `end_datetime` in ISO 8601 UTC, e.g. `2026-05-01T00:00:00Z`.
+- Time-of-day phrases (「朝」「夜」 etc.) are user-local. When the prompt is Japanese, assume JST (UTC+9) for the conversion to UTC unless the user states otherwise; otherwise infer from `personal-info` or ask.
+- Natural-language phrases (treat as inclusive of today unless user contradicts):
+  - 「先週」「last week」 → last 7 days ending today
+  - 「今週」「this week」 → Monday of this week → today
+  - 「先月」「last month」 → previous calendar month (1st → last day)
+  - 「今月」「this month」 → 1st of this month → today
+  - 「Nヶ月」「last N months」 → last N×30 days ending today (treat as approximate, not calendar-exact)
+  - These phrase-resolved windows count as **explicit user intent** — recipes that say "honor user's explicit range" must use the resolved window, not their own default.
+- **Recipe-level windows override the vague-default (last 7 days).** If a recipe specifies a window (e.g., 14 days for diagnostic, 90 days for personal-best mining) AND the user did not give a phrase, follow the recipe.
 
 ## Pagination
 
@@ -41,12 +49,14 @@ See `references/` for per-endpoint detail and `recipes/` for common workflows.
 
 Each recipe is a workflow guide for a specific user intent, not a hard-coded function. Pick the one that matches the user's real question.
 
+**When a question fits multiple recipes (e.g., topic + timeframe), topic-specific wins.** "先週の睡眠" is sleep-specific (sleep-trend), not a general weekly review (weekly-review). "先月の活動" is activity-specific, not monthly-narrative.
+
 ### Status / review (descriptive)
 
-- `recipes/weekly-review.md` — review last 7 days
-- `recipes/sleep-trend.md` — sleep trend analysis
-- `recipes/recovery-check.md` — recovery state right now
-- `recipes/monthly-narrative.md` — narrative monthly retrospective + next-month theme
+- `recipes/weekly-review.md` — broad 7-day review across sleep / activity / readiness. Use when user asks generally about "last week".
+- `recipes/sleep-trend.md` — sleep-only deep dive (stages, efficiency, trend). Use when the question is sleep-specific, not weekly-review.
+- `recipes/recovery-check.md` — point-in-time "am I recovered right now?". Today only, not a trend.
+- `recipes/monthly-narrative.md` — narrative monthly retrospective + next-month theme. Use for month-scale reflection, not week-scale.
 
 ### Diagnostic (why is something off?)
 

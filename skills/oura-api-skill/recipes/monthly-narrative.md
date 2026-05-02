@@ -12,10 +12,11 @@ At the start of a new month (or any 4-week boundary), produce a short narrative 
    - `/v2/usercollection/daily_readiness` for both ranges
    - `/v2/usercollection/daily_activity` for both ranges
 3. Compute, for each range:
-   - Mean sleep score, mean readiness, mean steps
-   - Standard deviation of sleep score (consistency proxy)
-   - Number of days with score <70 (rough nights count)
-4. Identify the **single biggest shift** vs the prior month: largest delta in mean or in variance. Ignore changes <5% — likely noise.
+   - Mean of `data[].score` for sleep, readiness, and activity (3 means)
+   - Mean of `data[].steps` from the activity response (separate stat)
+   - Standard deviation of `daily_sleep` `data[].score` (consistency proxy)
+   - Count of days where `daily_sleep` `data[].score < 70` (rough nights count)
+4. Identify the **single biggest shift** vs the prior month: largest delta in mean **or** in standard deviation. Apply the 5% threshold to **each** axis independently (mean delta and sd delta) — drop shifts where `|delta| / prior_value < 0.05`.
 5. Build the narrative in 3 paragraphs:
    - **What happened**: the dominant pattern of last month, expressed as a story arc (stable, declining, recovering, volatile, etc.) — not a list of numbers.
    - **Why probably**: 1-2 hypotheses tied to known life context (season, travel, project crunch, training cycle) the user mentioned in conversation. If no context, mark as "probable cause unclear".

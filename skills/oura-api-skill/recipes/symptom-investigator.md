@@ -5,11 +5,13 @@ When the user reports a vague subjective complaint ("最近疲れる", "集中�
 ## Steps
 
 1. Restate the complaint in 1 sentence and list 2-3 candidate hypotheses (e.g., sleep debt, autonomic stress, sub-clinical illness, training overload, dehydration). Keep the list short.
-2. Pick the minimum endpoints needed to test each hypothesis. Typical mapping:
-   - **Sleep debt** → `/v2/usercollection/daily_sleep` last 14 days; check rolling 7d total sleep duration.
-   - **Autonomic stress** → `/v2/usercollection/daily_readiness` last 14 days; watch `contributors.hrv_balance` and `contributors.resting_heart_rate`.
-   - **Sub-clinical illness** → same readiness endpoint; flag `temperature_deviation` >0.3°C above the user's 14-day baseline for 2+ consecutive nights.
-   - **Training overload** → `/v2/usercollection/workout` + `/v2/usercollection/daily_activity` last 14 days; look for high `total` activity with falling readiness.
+2. Pick the minimum endpoints needed to test each hypothesis. Typical mapping (exact JSON paths):
+   - **Sleep debt** → `/v2/usercollection/daily_sleep` last 14 days; sum `data[].contributors.total_sleep` (or fetch raw `total_sleep_duration` via `/v2/usercollection/sleep`) over rolling 7-day window.
+   - **Autonomic stress** → `/v2/usercollection/daily_readiness` last 14 days; watch `data[].contributors.hrv_balance` (0–100 score) and `data[].contributors.resting_heart_rate` (0–100 score). For raw HRV ms, fetch `/v2/usercollection/sleep` and read `average_hrv`.
+   - **Sub-clinical illness** → `/v2/usercollection/daily_sleep` `data[].temperature_deviation` (preferred field path) — flag >0.3°C above the user's 14-day baseline for 2+ consecutive nights. Falls back to `daily_readiness.contributors.body_temperature` (0–100 score) if the raw deviation field is missing.
+   - **Training overload** → `/v2/usercollection/workout` + `/v2/usercollection/daily_activity` last 14 days; look for high `data[].score` activity days with falling `daily_readiness.score`.
+
+**Baseline window**: when comparing recent nights to "the user's own baseline", use the **trailing 11 days** of the 14-day pull (i.e., days 1–11) and treat the most recent **3 nights** as the evaluation window. State this split explicitly in the output.
 3. Fetch the relevant ranges with `oura_api_get` (`max_pages: 1` for 14-day daily endpoints). Do not pull endpoints unrelated to the active hypotheses.
 4. For each hypothesis, present:
    - The signal you looked at
