@@ -2,17 +2,17 @@ import os from 'node:os';
 import path from 'node:path';
 import { defaultMcpEntry, type Integration } from './types.js';
 
-// Claude Code は user 側の MCP server を ~/.claude.json から読む。
-// ~/.claude/settings.json は別のフィールド (permissions / hooks 等) 用で
-// mcpServers を書いても無視されるので注意。
+// Claude Code reads user-level MCP servers from ~/.claude.json.
+// ~/.claude/settings.json is for other fields (permissions / hooks), and
+// `mcpServers` written there is ignored.
 export const claudeCodeUser: Integration = {
   name: 'Claude Code (user)',
   configPath: () => path.join(os.homedir(), '.claude.json'),
   buildEntry: defaultMcpEntry,
 };
 
-// project 側は <project>/.mcp.json が公式 MCP server 配置先。
-// .claude/settings.local.json は permissions 用で mcpServers は読まれない。
+// At the project level, <project>/.mcp.json is the official location for MCP servers.
+// .claude/settings.local.json is for permissions; `mcpServers` there is not read.
 export const claudeCodeProject: Integration = {
   name: 'Claude Code (project)',
   configPath: () => path.join(process.cwd(), '.mcp.json'),

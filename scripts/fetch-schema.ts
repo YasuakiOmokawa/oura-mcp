@@ -3,7 +3,7 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { parse as parseYaml } from 'yaml';
 
-// フェーズ0 検証で確定 (2026-04-29): Redoc が参照する spec-url
+// Confirmed in Phase 0 verification (2026-04-29): the spec-url referenced by Redoc
 const SCHEMA_URL =
   process.env.OURA_OPENAPI_URL ?? 'https://cloud.ouraring.com/v2/static/json/openapi-1.29.json';
 
@@ -38,7 +38,7 @@ function minimize(full: Schema): { paths: Record<string, Record<string, { summar
   const paths: Record<string, Record<string, { summary?: string }>> = {};
   for (const [p, item] of Object.entries(full.paths)) {
     if (!p.startsWith('/v2/')) continue;
-    // Oura sandbox endpoints は本番で使えないため除外
+    // Oura sandbox endpoints are not usable in production, so exclude them
     if (p.startsWith('/v2/sandbox/')) continue;
     const methods: Record<string, { summary?: string }> = {};
     for (const [method, op] of Object.entries(item)) {

@@ -27,8 +27,8 @@ async function main(): Promise<void> {
   const mappings = JSON.parse(await readFile(MAPPINGS, 'utf-8')) as Record<string, string>;
   await mkdir(OUT, { recursive: true });
 
-  // Oura OpenAPI は tags が空のため path prefix → category にマッピング
-  // 派生 path (/{document_id} 等) を取りこぼさないよう長い prefix から照合する
+  // Oura OpenAPI has empty tags, so map path prefix → category instead.
+  // Match longer prefixes first so derived paths like `/{document_id}` are not missed.
   const prefixes = Object.keys(mappings).sort((a, b) => b.length - a.length);
   function categoryFor(p: string): string | null {
     for (const prefix of prefixes) {

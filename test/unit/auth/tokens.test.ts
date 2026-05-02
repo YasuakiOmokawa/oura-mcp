@@ -103,7 +103,7 @@ describe('tokens', () => {
   });
 
   it('returns null on non-ENOENT read error (token path is a directory)', async () => {
-    // tokens.json をディレクトリとして作成 → readFile が EISDIR で失敗するパスを通す
+    // Create tokens.json as a directory so readFile fails with EISDIR, exercising that error path
     const dir = path.join(tmp, 'oura-mcp');
     mkdirSync(dir, { recursive: true });
     mkdirSync(path.join(dir, 'tokens.json'));

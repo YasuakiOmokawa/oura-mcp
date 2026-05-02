@@ -36,7 +36,7 @@ export function createAuthManager(deps: AuthManagerDeps): AuthManager {
 
   function refreshIfNeeded(): Promise<TokenData> {
     if (inflight) return inflight;
-    // 並行 call が同じ Promise を共有するために同期代入が必須 (await する前に inflight を立てる)
+    // Synchronous assignment is required so concurrent callers share the same Promise (set inflight before any await)
     inflight = doRefresh().finally(() => {
       inflight = null;
     });

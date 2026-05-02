@@ -1,16 +1,16 @@
 #!/usr/bin/env -S npx tsx
 // scripts/verify-oauth.ts
-// Phase 0: Oura OAuth 仕様の実機検証（v1 配布物には含めない）
-// authorize → exchange → 直後に refresh の最短パスで動作を確認する。
-// 注意: code 再使用や wrong code_verifier テストは Oura 側で security 措置として
-// refresh_token を invalidate する可能性があるため、ここでは行わない。
+// Phase 0: live verification of Oura's OAuth spec (not shipped in the v1 package).
+// Walks the shortest path: authorize → exchange → refresh immediately afterwards.
+// Note: code reuse and wrong-code_verifier tests are NOT performed here, since
+// Oura may invalidate the refresh_token as a security measure.
 //
-// 使い方:
-//   1. https://developer.ouraring.com/applications で開発者アプリを作成
-//      Redirect URI: http://localhost:54321/callback （完全一致、`localhost` のみ）
-//      Scopes: 全 11 read scope を有効化
-//   2. Client ID / Client Secret を取得
-//   3. 実行:
+// Usage:
+//   1. Create a developer app at https://developer.ouraring.com/applications
+//      Redirect URI: http://localhost:54321/callback (exact match, `localhost` only)
+//      Scopes: enable all 11 read scopes
+//   2. Get the Client ID / Client Secret
+//   3. Run:
 //        export OURA_CLIENT_ID=...
 //        export OURA_CLIENT_SECRET=...
 //        npx tsx scripts/verify-oauth.ts
@@ -109,7 +109,7 @@ const server = http.createServer((req, res) => {
         return Promise.reject(new Error('[clean] FAIL: exchange did not return tokens'));
       }
 
-      // **直後** に refresh 実行（wrong-verifier テストは挟まない）
+      // Run refresh **immediately** afterwards (no wrong-verifier test in between)
       console.error('\n[clean] refreshing IMMEDIATELY (no other operations between)...');
       const refreshBody = new URLSearchParams({
         grant_type: 'refresh_token',

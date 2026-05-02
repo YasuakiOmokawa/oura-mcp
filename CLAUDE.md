@@ -9,6 +9,10 @@
 | `security.md` | `src/auth/` `src/server/` `src/api/` `src/utils/redact.ts` `src/utils/atomic-write.ts` 編集時 |
 | `release.md` | `.changeset/` `CHANGELOG.md` `package.json` 編集時 |
 
+## 言語
+
+コメント・ドキュメントは **英語** で書く。例外: `CLAUDE.md` と `.claude/rules/*.md` のみ日本語可（人間が読みやすさ優先）。changeset 本文も英語。
+
 ## 命名
 
 - factory 関数: `create*`（例: `createAuthManager`, `createFileTokenStore`）

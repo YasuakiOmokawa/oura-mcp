@@ -4,35 +4,35 @@
 
 ### Patch Changes
 
-- 6aa264d: devDep: typescript 5.9 → 6.0.3
+- 6aa264d: devDep: bump typescript from 5.9 to 6.0.3
 
 ## 0.2.1
 
 ### Patch Changes
 
-- 0216fdf: `/simplify` レビューでの一括修正。
+- 0216fdf: Batch fixes from `/simplify` review.
 
-  - exchangeCode に 10s timeout 追加
-  - OAuth callback timer の clearTimeout
-  - auth-manager で toTokenData 利用
-  - log level をモジュール init で cache
-  - tail-call only な async 除去
-  - 不要 Promise.resolve wrapper 削除
-  - buildEntry を defaultMcpEntry 集約
-  - ハードコード 127.0.0.1 を定数化
-  - What コメント整理
+  - Added 10s timeout to exchangeCode
+  - clearTimeout for OAuth callback timer
+  - auth-manager now uses toTokenData
+  - Cache log level at module init
+  - Remove tail-call-only async functions
+  - Drop unnecessary Promise.resolve wrappers
+  - Consolidate buildEntry into defaultMcpEntry
+  - Extract hardcoded 127.0.0.1 into a constant
+  - Clean up What-style comments
 
 ## 0.2.0
 
 ### Minor Changes
 
-- 7b94f3a: `configure` ウィザードを再入力負担なく回せるよう改善。
+- 7b94f3a: Streamline the `configure` wizard so it can be re-run without re-entering everything.
 
-  - 保存済み Client ID / Callback port を Step 1 でプリフィルし、Enter だけで確定可能に。Client Secret は Enter で「現在値を保持」、新しい値を打つと差し替え。
-  - 完了後に `npx skills add YasuakiOmokawa/oura-mcp` で oura-api-skill (API リファレンス + recipes) を入れる手順を案内。
-  - `--force` フラグで保存済み config / tokens を消してゼロから設定し直すモードを追加。`npx @yasuakiomokawa/oura-mcp configure --force` で起動。
+  - Step 1 now pre-fills the saved Client ID and callback port, so a bare Enter is enough to keep them. For Client Secret, Enter keeps the current value; typing a new one replaces it.
+  - On completion, the wizard suggests `npx skills add YasuakiOmokawa/oura-mcp` to install oura-api-skill (API reference + recipes).
+  - Added a `--force` flag that wipes saved config / tokens and starts the wizard from scratch. Invoke with `npx @yasuakiomokawa/oura-mcp configure --force`.
 
-  参考実装: `freee/freee-mcp` の cli ウィザード。
+  Reference implementation: the CLI wizard in `freee/freee-mcp`.
 
 ## 0.1.4
 

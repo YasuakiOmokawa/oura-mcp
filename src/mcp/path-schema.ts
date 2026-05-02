@@ -6,7 +6,7 @@ export const PathSchema = z
   .refine(
     (p) => {
       if (p.includes('..') || p.includes('\\')) return false;
-      // biome-ignore lint/suspicious/noControlCharactersInRegex: 制御文字検出が目的
+      // biome-ignore lint/suspicious/noControlCharactersInRegex: detecting control chars is the point
       if (/[\x00-\x1F]/.test(p)) return false;
       if (/(?:%2E){2}/i.test(p)) return false;
       if (/%2F/i.test(p)) return false;

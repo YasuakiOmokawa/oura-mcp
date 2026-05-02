@@ -139,7 +139,3 @@ Useful scripts:
 ## License
 
 [MIT](LICENSE)
-
-## 日本語の方へ
-
-Oura Ring の API v2 を MCP 経由で扱うためのサーバーです。`npx @yasuakiomokawa/oura-mcp configure` 一発で OAuth 認可からクライアント設定追記まで完了します。Claude Desktop / Claude Code / Cursor を自動検出するので、対応クライアントを使っていれば手動編集は不要です。トークンは `~/.config/oura-mcp/` に `0600` で保存され、`refresh_token` 失効時はチャットから `oura_authenticate` を呼べば再認可できます。詳しくは上記 Troubleshooting を参照してください。

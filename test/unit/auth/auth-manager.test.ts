@@ -85,7 +85,7 @@ describe('createAuthManager', () => {
       save: vi.fn(),
       clear: vi.fn(),
       refresh,
-      now: () => 1_000_000 - 60_000, // ぴったり境界
+      now: () => 1_000_000 - 60_000, // exactly at the refresh boundary
     });
     await mgr.getValidAccessToken();
     expect(refresh).toHaveBeenCalled();
@@ -186,7 +186,7 @@ describe('createAuthManager', () => {
     const tokens = makeTokens({ access_token: 'fresh' });
     await mgr.setTokens(tokens);
     expect(save).toHaveBeenCalledWith(tokens);
-    // 後続の getCurrentTokens は cache から返るので load を再呼出ししない
+    // Subsequent getCurrentTokens returns from cache, so load is not called again
     expect(await mgr.getCurrentTokens()).toEqual(tokens);
     expect(load).not.toHaveBeenCalled();
   });

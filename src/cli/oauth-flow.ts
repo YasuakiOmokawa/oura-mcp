@@ -5,7 +5,7 @@ import { clearTokens, loadTokens, saveTokens } from '../auth/tokens.js';
 import type { Credentials } from './prompts.js';
 
 export async function performOAuth(creds: Credentials): Promise<void> {
-  // CLI フェーズ専用 AuthManager。refresh は configure 中に走らないため no-op を投げる
+  // AuthManager dedicated to the CLI phase. Refresh never runs during `configure`, so we throw a no-op.
   const authManager = createAuthManager({
     load: loadTokens,
     save: saveTokens,
