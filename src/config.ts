@@ -10,7 +10,7 @@ export const ConfigDataSchema = z.object({
   clientId: z.string().min(1),
   clientSecret: z.string().min(1),
   callbackPort: z.number().int().min(1024).max(65535).optional(),
-  apiUrl: z.string().url().optional(),
+  apiUrl: z.url().optional(),
 });
 export type ConfigData = z.infer<typeof ConfigDataSchema>;
 
