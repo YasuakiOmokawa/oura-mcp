@@ -1,5 +1,11 @@
 # @yasuakiomokawa/oura-mcp
 
+## 0.2.5
+
+### Patch Changes
+
+- d5cd322: Wipe local tokens when the upstream rejects a refresh with `invalid_grant` (OAuth 2.1 refresh-token reuse detection). The next tool call now triggers a clean re-authorization instead of repeatedly retrying a revoked refresh_token.
+
 ## 0.2.4
 
 ### Patch Changes
