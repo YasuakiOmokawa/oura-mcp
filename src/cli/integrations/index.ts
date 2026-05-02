@@ -1,6 +1,6 @@
 import { existsSync, constants as fsConstants } from 'node:fs';
 import { access, copyFile, readFile } from 'node:fs/promises';
-import prompts from 'prompts';
+import { confirm } from '@inquirer/prompts';
 import { atomicWriteFile } from '../../utils/atomic-write.js';
 import { log } from '../../utils/log.js';
 import { claudeCodeProject, claudeCodeUser } from './claude-code.js';
@@ -29,13 +29,11 @@ export async function configureClients(): Promise<void> {
 
   console.error(`\nDetected ${detected.length} MCP client(s):`);
   for (const { integ, p } of detected) {
-    const ans = await prompts({
-      type: 'confirm',
-      name: 'ok',
-      initial: true,
+    const ok = await confirm({
       message: `Add oura-mcp to ${integ.name} (${p})?`,
+      default: true,
     });
-    if (!ans.ok) continue;
+    if (!ok) continue;
     await updateConfig(integ, p);
   }
 }
@@ -61,13 +59,11 @@ async function updateConfig(integ: Integration, file: string): Promise<void> {
 
   const mcpServers = (parsed.mcpServers as Record<string, unknown> | undefined) ?? {};
   if (mcpServers.oura) {
-    const overwrite = await prompts({
-      type: 'confirm',
-      name: 'ok',
+    const overwrite = await confirm({
       message: '"oura" entry already exists. Overwrite?',
-      initial: false,
+      default: false,
     });
-    if (!overwrite.ok) return;
+    if (!overwrite) return;
   }
   const next = { ...parsed, mcpServers: { ...mcpServers, oura: integ.buildEntry() } };
 

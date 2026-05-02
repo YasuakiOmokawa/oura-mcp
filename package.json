@@ -32,16 +32,15 @@
     "update:docs": "npm run fetch:schema && npm run generate:references"
   },
   "dependencies": {
+    "@inquirer/prompts": "^7.10.1",
     "@modelcontextprotocol/sdk": "^1.29.0",
     "open": "^10.1.0",
-    "prompts": "^2.4.2",
     "zod": "^4.4.2"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.0.0",
     "@changesets/cli": "^2.27.9",
     "@types/node": "^22.0.0",
-    "@types/prompts": "^2.4.9",
     "@vitest/coverage-v8": "^2.1.8",
     "msw": "^2.4.0",
     "shx": "^0.4.0",
