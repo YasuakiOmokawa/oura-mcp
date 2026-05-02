@@ -13,7 +13,7 @@ jobs:
     permissions:
       contents: write       # changesets/action が "Version Packages" PR を作成・更新するために必要
       pull-requests: write  # 同 PR への push / label
-      id-token: write       # npm provenance + mcp-publisher GitHub OIDC
+      id-token: write       # npm Trusted Publishing (auto-provenance) + mcp-publisher GitHub OIDC
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
         with:
@@ -26,6 +26,9 @@ jobs:
           cache: 'npm'
           registry-url: 'https://registry.npmjs.org'
 
+      # npm Trusted Publishing requires npm CLI 11.5.1+; setup-node@v4 still
+      # ships with npm 10.x for Node 20, so upgrade explicitly.
+      - run: npm install -g npm@latest
       - run: npm ci
       - run: npm run build
       - run: npm test
@@ -43,9 +46,10 @@ jobs:
           # ci.yml の pull_request トリガーが fire しない (anti-recursion)。
           # 必須 status check が通らずマージ詰まりするため PAT で上書きする。
           GITHUB_TOKEN: ${{ secrets.CHANGESETS_PAT }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          # npm publish に --provenance を付けるための公式 env
-          NPM_CONFIG_PROVENANCE: 'true'
+          # No NODE_AUTH_TOKEN: npm Trusted Publishing exchanges the GitHub
+          # OIDC token (id-token: write) for a short-lived publish token.
+          # No NPM_CONFIG_PROVENANCE: provenance is auto-attested under
+          # Trusted Publishing on npm CLI 11.5.1+.
 
       # release PR は changeset から決定論的に生成される (version bump + CHANGELOG)
       # 元の changeset を含む PR は既に approve 済みなので、ここでは bot identity
