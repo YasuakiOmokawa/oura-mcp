@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { DEFAULT_CALLBACK_PORT } from './constants.js';
 import { getConfigDir } from './utils/config-dir.js';
 import { log } from './utils/log.js';
+import { ensureSecureFile } from './utils/secure-file.js';
 
 export const ConfigDataSchema = z.object({
   schemaVersion: z.literal(1),
@@ -62,7 +63,9 @@ export async function loadConfig(): Promise<RuntimeConfig> {
 }
 
 async function loadConfigFile(): Promise<ConfigData | null> {
-  return readFile(getConfigPath(), 'utf-8')
+  const file = getConfigPath();
+  await ensureSecureFile(file);
+  return readFile(file, 'utf-8')
     .then((raw) => JSON.parse(raw) as unknown)
     .then((parsed) => {
       const result = ConfigDataSchema.safeParse(parsed);
