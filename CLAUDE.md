@@ -6,7 +6,6 @@
 |---|---|
 | `no-class-syntax.md` | `src/` `test/` `scripts/` の `*.ts` 編集時 |
 | `mcp-sdk.md` | `src/index.ts` `src/mcp/` 編集時 |
-| `security.md` | `src/auth/` `src/server/` `src/api/` `src/utils/redact.ts` `src/utils/atomic-write.ts` 編集時 |
 | `release.md` | `.changeset/` `CHANGELOG.md` `package.json` 編集時 |
 
 ## 言語

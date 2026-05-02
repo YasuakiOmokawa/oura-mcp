@@ -53,6 +53,37 @@ describe('exchangeCode (integration)', () => {
       }),
     ).rejects.toBeInstanceOf(OuraOAuthError);
   });
+
+  it('redacts secrets in OuraOAuthError.body', async () => {
+    server.use(
+      http.post('https://api.ouraring.com/oauth/token', () =>
+        HttpResponse.json(
+          {
+            error: 'invalid_request',
+            // Defense-in-depth: the upstream should never echo these back, but if it does,
+            // we must not let them leak through error logging.
+            access_token: 'leaked-access',
+            refresh_token: 'leaked-refresh',
+            client_secret: 'leaked-secret',
+          },
+          { status: 400 },
+        ),
+      ),
+    );
+    const err = await exchangeCode({
+      code: 'c',
+      codeVerifier: 'v',
+      clientId: 'i',
+      clientSecret: 's',
+      redirectUri: 'http://localhost:54321/callback',
+    }).catch((e: unknown) => e);
+    expect(err).toBeInstanceOf(OuraOAuthError);
+    const body = (err as OuraOAuthError).body as Record<string, unknown>;
+    expect(body.error).toBe('invalid_request');
+    expect(body.access_token).toBe('***');
+    expect(body.refresh_token).toBe('***');
+    expect(body.client_secret).toBe('***');
+  });
 });
 
 describe('refreshTokens (integration)', () => {

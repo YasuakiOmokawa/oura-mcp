@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { z } from 'zod';
-import { DEFAULT_CALLBACK_PORT, OURA_API_BASE } from './constants.js';
+import { DEFAULT_CALLBACK_PORT } from './constants.js';
 import { getConfigDir } from './utils/config-dir.js';
 import { log } from './utils/log.js';
 
@@ -10,7 +10,6 @@ export const ConfigDataSchema = z.object({
   clientId: z.string().min(1),
   clientSecret: z.string().min(1),
   callbackPort: z.number().int().min(1024).max(65535).optional(),
-  apiUrl: z.url().optional(),
 });
 export type ConfigData = z.infer<typeof ConfigDataSchema>;
 
@@ -18,7 +17,6 @@ export type RuntimeConfig = {
   clientId: string;
   clientSecret: string;
   callbackPort: number;
-  apiUrl: string;
 };
 
 function getConfigPath(): string {
@@ -47,7 +45,6 @@ export async function loadConfig(): Promise<RuntimeConfig> {
       clientId: envId,
       clientSecret: envSecret,
       callbackPort: parsePort(process.env.OURA_CALLBACK_PORT) ?? DEFAULT_CALLBACK_PORT,
-      apiUrl: OURA_API_BASE,
     };
   }
 
@@ -61,7 +58,6 @@ export async function loadConfig(): Promise<RuntimeConfig> {
     clientId: fileCfg.clientId,
     clientSecret: fileCfg.clientSecret,
     callbackPort: fileCfg.callbackPort ?? DEFAULT_CALLBACK_PORT,
-    apiUrl: fileCfg.apiUrl ?? OURA_API_BASE,
   };
 }
 
