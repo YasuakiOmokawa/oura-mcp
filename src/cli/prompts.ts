@@ -32,7 +32,7 @@ export async function collectCredentials(
         message: hasExisting
           ? 'Oura Client Secret (Enter to keep current):'
           : 'Oura Client Secret:',
-        // prompts に "keep existing" モードがないので、既存値ありのときだけ空入力を許容
+        // `prompts` has no "keep existing" mode, so allow empty input only when an existing value is present
         validate: (v: string) => (hasExisting && v.length === 0) || v.length > 0 || 'required',
       },
       {
@@ -40,8 +40,8 @@ export async function collectCredentials(
         name: 'callbackPort',
         message: 'Callback port:',
         initial: existing?.callbackPort ?? DEFAULT_CALLBACK_PORT,
-        // prompts v2 の NumberPrompt は submit 時に validate→initial 反映の順なので、
-        // empty 入力を許容しないと Enter で初期値が確定できない
+        // `prompts` v2 NumberPrompt runs validate before applying `initial` on submit,
+        // so empty input must be allowed for Enter to commit the default
         validate: (v: number | string) =>
           v === '' || (typeof v === 'number' && v >= 1024 && v <= 65535) || 'must be 1024-65535',
       },

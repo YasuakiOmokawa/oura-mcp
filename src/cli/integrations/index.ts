@@ -41,7 +41,7 @@ export async function configureClients(): Promise<void> {
 }
 
 async function updateConfig(integ: Integration, file: string): Promise<void> {
-  // 既存ファイルへの書き込み権限を事前確認して EACCES での crash を防ぐ
+  // Pre-check write permission to avoid an EACCES crash mid-run
   const writable = await access(file, fsConstants.W_OK)
     .then(() => true)
     .catch(() => false);

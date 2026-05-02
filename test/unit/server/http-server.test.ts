@@ -7,7 +7,7 @@ afterEach(() => {
 });
 
 async function pickPort(): Promise<number> {
-  // 衝突回避のため high random port (49152-65535)
+  // High random port (49152-65535) to avoid collisions
   return 49152 + Math.floor(Math.random() * 16000);
 }
 
