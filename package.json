@@ -33,9 +33,9 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
-    "zod": "^3.25.0",
+    "open": "^10.1.0",
     "prompts": "^2.4.2",
-    "open": "^10.1.0"
+    "zod": "^3.25.0"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.0.0",
@@ -46,7 +46,7 @@
     "msw": "^2.4.0",
     "shx": "^0.3.4",
     "tsx": "^4.19.0",
-    "typescript": "^5.8.0",
+    "typescript": "^6.0.3",
     "vitest": "^2.1.8",
     "yaml": "^2.5.0"
   },
