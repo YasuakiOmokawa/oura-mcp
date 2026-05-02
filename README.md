@@ -111,15 +111,6 @@ OURA_CALLBACK_PORT=54321  # optional
 - **Setup hangs at "Waiting for authorization"** — you haven't approved in the browser yet, or the authorize page was opened in a different browser session than the one with localhost reachability.
 - **No log output** — set `OURA_LOG_LEVEL=debug` for verbose stderr logging.
 
-## Security
-
-- PKCE (S256) + cryptographic `state` validation on the OAuth flow.
-- Tokens stored at `~/.config/oura-mcp/tokens.json` with `0600` permissions, written atomically.
-- Secrets (`access_token`, `refresh_token`, `client_secret`, `code`, `code_verifier`) are redacted from logs via `utils/redact.ts`.
-- Network: `User-Agent: oura-mcp/<version>`, all requests use `AbortSignal.timeout` (30 s API / 10 s OAuth).
-- Local callback listener binds `127.0.0.1:54321` only; redirect URI uses the loopback name `localhost` for Oura compatibility.
-- Released to npm with [provenance](https://docs.npmjs.com/generating-provenance-statements).
-
 ## Development
 
 ```bash

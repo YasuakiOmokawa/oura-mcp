@@ -14,6 +14,18 @@ export type OuraClientDeps = {
 };
 
 const API_HOST = OURA_API_BASE.replace(/\/v2$/, '');
+const ALLOWED_HOST = 'api.ouraring.com';
+
+// MCP spec MUST: never let a tool exfiltrate the upstream token to a different host.
+export function assertAllowedHost(rawUrl: string): void {
+  const u = new URL(rawUrl);
+  if (u.protocol !== 'https:') {
+    throw new Error(`Refusing fetch with non-https scheme: ${u.protocol}`);
+  }
+  if (u.host !== ALLOWED_HOST) {
+    throw new Error(`Refusing fetch to non-Oura host: ${u.host}`);
+  }
+}
 
 export function createOuraClient(deps: OuraClientDeps): OuraClient {
   return {
@@ -25,6 +37,7 @@ export function createOuraClient(deps: OuraClientDeps): OuraClient {
       if (params) {
         for (const [k, v] of Object.entries(params)) url.searchParams.set(k, String(v));
       }
+      assertAllowedHost(url.toString());
       const token = await deps.getAccessToken();
       log.debug('api.request', { path, params });
       const res = await fetch(url.toString(), {

@@ -1,5 +1,6 @@
 import { OURA_AUTHORIZATION_ENDPOINT, OURA_TOKEN_ENDPOINT, USER_AGENT } from '../constants.js';
 import { log } from '../utils/log.js';
+import { redact } from '../utils/redact.js';
 
 export class OuraOAuthError extends Error {
   constructor(
@@ -92,7 +93,7 @@ async function tokenRequest(body: URLSearchParams, signal?: AbortSignal): Promis
       log.warn('auth.refresh_failed', { reason: 'invalid_grant' });
       throw new RefreshTokenExpiredError();
     }
-    throw new OuraOAuthError(`Token endpoint ${res.status}`, res.status, json);
+    throw new OuraOAuthError(`Token endpoint ${res.status}`, res.status, redact(json));
   }
   return json as unknown as TokenResponse;
 }
