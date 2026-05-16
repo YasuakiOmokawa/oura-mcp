@@ -26,10 +26,12 @@ jobs:
           cache: 'npm'
           registry-url: 'https://registry.npmjs.org'
 
-      # npm Trusted Publishing requires npm CLI 11.5.1+; setup-node@v4 still
-      # ships with npm 10.x for Node 20, so upgrade explicitly.
+      # npm Trusted Publishing requires npm CLI 11.5.1+; setup-node@v4
+      # ships with npm 10.x for Node 20, so upgrade explicitly. (Node 22's
+      # bundled npm 10 has a broken self-upgrade path but this job pins
+      # Node 20, so the upgrade always succeeds here.)
       - run: npm install -g npm@latest
-      - run: npm ci
+      - run: npm ci --ignore-scripts
       - run: npm run build
       - run: npm test
 
