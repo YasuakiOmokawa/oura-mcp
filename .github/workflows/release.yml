@@ -29,7 +29,7 @@ jobs:
       # npm Trusted Publishing requires npm CLI 11.5.1+; setup-node@v4 still
       # ships with npm 10.x for Node 20, so upgrade explicitly.
       - run: npm install -g npm@latest
-      - run: npm ci
+      - run: npm ci --ignore-scripts
       - run: npm run build
       - run: npm test
 
