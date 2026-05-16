@@ -27,16 +27,10 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       # npm Trusted Publishing requires npm CLI 11.5.1+; setup-node@v4
-      # ships with npm 10.x for Node 20. Self-upgrade is broken on Node
-      # 22.20+ (bundles npm 11; `npm install -g npm@latest` fails with
-      # MODULE_NOT_FOUND for promise-retry), so only upgrade when below 11.
-      - name: Ensure npm 11+
-        run: |
-          if [ "$(npm -v | cut -d. -f1)" -lt 11 ]; then
-            npm install -g npm@latest
-          else
-            echo "npm $(npm -v) already supports min-release-age"
-          fi
+      # ships with npm 10.x for Node 20, so upgrade explicitly. (Node 22's
+      # bundled npm 10 has a broken self-upgrade path but this job pins
+      # Node 20, so the upgrade always succeeds here.)
+      - run: npm install -g npm@latest
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: npm test

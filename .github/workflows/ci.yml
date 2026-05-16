@@ -23,16 +23,23 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
           cache: 'npm'
-      # Node 20 ships npm 10 which silently ignores min-release-age.
-      # Node 22.20+ ships npm 11 already, and self-upgrading via
-      # `npm install -g npm@latest` is broken on it (MODULE_NOT_FOUND
-      # for promise-retry), so only upgrade when below 11.
-      - name: Ensure npm 11+
+      # Node 20 ships npm 10 which ignores min-release-age. Node 22 also
+      # ships npm 10, but its bundled `npm install -g npm@latest` is broken
+      # (MODULE_NOT_FOUND: promise-retry during reify). Since `npm ci`
+      # installs from lockfile and does not resolve fresh versions, the
+      # cooldown is not enforced at CI install time anyway; the upgrade
+      # is only useful for forward compatibility on Node 20.
+      - name: Ensure npm 11+ (Node 20 only)
+        shell: bash
         run: |
-          if [ "$(npm -v | cut -d. -f1)" -lt 11 ]; then
-            npm install -g npm@latest
-          else
+          npm_major=$(npm -v | cut -d. -f1)
+          node_major=$(node -v | sed 's/^v//' | cut -d. -f1)
+          if [ "$npm_major" -ge 11 ]; then
             echo "npm $(npm -v) already supports min-release-age"
+          elif [ "$node_major" -ge 22 ]; then
+            echo "skipping npm upgrade on Node ${node_major}: bundled npm 10 self-upgrade is broken"
+          else
+            npm install -g npm@latest
           fi
       - run: npm ci --ignore-scripts
       - run: npm run lint
@@ -48,16 +55,23 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020  # v4
         with:
           node-version: 20
-      # Node 20 ships npm 10 which silently ignores min-release-age.
-      # Node 22.20+ ships npm 11 already, and self-upgrading via
-      # `npm install -g npm@latest` is broken on it (MODULE_NOT_FOUND
-      # for promise-retry), so only upgrade when below 11.
-      - name: Ensure npm 11+
+      # Node 20 ships npm 10 which ignores min-release-age. Node 22 also
+      # ships npm 10, but its bundled `npm install -g npm@latest` is broken
+      # (MODULE_NOT_FOUND: promise-retry during reify). Since `npm ci`
+      # installs from lockfile and does not resolve fresh versions, the
+      # cooldown is not enforced at CI install time anyway; the upgrade
+      # is only useful for forward compatibility on Node 20.
+      - name: Ensure npm 11+ (Node 20 only)
+        shell: bash
         run: |
-          if [ "$(npm -v | cut -d. -f1)" -lt 11 ]; then
-            npm install -g npm@latest
-          else
+          npm_major=$(npm -v | cut -d. -f1)
+          node_major=$(node -v | sed 's/^v//' | cut -d. -f1)
+          if [ "$npm_major" -ge 11 ]; then
             echo "npm $(npm -v) already supports min-release-age"
+          elif [ "$node_major" -ge 22 ]; then
+            echo "skipping npm upgrade on Node ${node_major}: bundled npm 10 self-upgrade is broken"
+          else
+            npm install -g npm@latest
           fi
       - run: npm ci --ignore-scripts
       - run: npm audit --audit-level=high

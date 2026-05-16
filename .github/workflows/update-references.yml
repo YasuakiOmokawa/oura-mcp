@@ -17,12 +17,17 @@ jobs:
         with:
           node-version: 20
           cache: 'npm'
-      - name: Ensure npm 11+
+      - name: Ensure npm 11+ (Node 20 only)
+        shell: bash
         run: |
-          if [ "$(npm -v | cut -d. -f1)" -lt 11 ]; then
-            npm install -g npm@latest
-          else
+          npm_major=$(npm -v | cut -d. -f1)
+          node_major=$(node -v | sed 's/^v//' | cut -d. -f1)
+          if [ "$npm_major" -ge 11 ]; then
             echo "npm $(npm -v) already supports min-release-age"
+          elif [ "$node_major" -ge 22 ]; then
+            echo "skipping npm upgrade on Node ${node_major}: bundled npm 10 self-upgrade is broken"
+          else
+            npm install -g npm@latest
           fi
       - run: npm ci --ignore-scripts
       - run: npm run update:docs
