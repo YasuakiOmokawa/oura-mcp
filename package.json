@@ -32,7 +32,7 @@
     "update:docs": "npm run fetch:schema && npm run generate:references"
   },
   "dependencies": {
-    "@inquirer/prompts": "^7.10.1",
+    "@inquirer/prompts": "^8.5.0",
     "@modelcontextprotocol/sdk": "^1.29.0",
     "open": "^10.1.0",
     "zod": "^4.4.2"
