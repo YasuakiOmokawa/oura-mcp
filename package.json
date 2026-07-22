@@ -40,13 +40,13 @@
   "devDependencies": {
     "@biomejs/biome": "^2.0.0",
     "@changesets/cli": "^2.27.9",
-    "@types/node": "^22.0.0",
-    "@vitest/coverage-v8": "^2.1.8",
+    "@types/node": "^26.1.1",
+    "@vitest/coverage-v8": "^4.1.10",
     "msw": "^2.4.0",
     "shx": "^0.4.0",
     "tsx": "^4.19.0",
-    "typescript": "^6.0.3",
-    "vitest": "^2.1.8",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.10",
     "yaml": "^2.5.0"
   },
   "overrides": {
